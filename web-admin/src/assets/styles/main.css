@@ -1,0 +1,100 @@
+@import "@fontsource/roboto/300.css";
+@import "@fontsource/roboto/400.css";
+@import "@fontsource/roboto/500.css";
+@import "@fontsource/roboto/700.css";
+
+/* @layer tailwind-base, primereact, tailwind-utilities; */
+@layer primereact, tailwind-utilities;
+
+@import "primereact/resources/themes/lara-light-indigo/theme.css"
+  layer(primereact);
+
+/* @layer tailwind-base {
+  @import "tailwindcss/index";
+} */
+
+@layer tailwind-utilities {
+  @import "tailwindcss/utilities";
+  @import "tailwindcss/theme";
+}
+
+@custom-variant dark (&:where([data-theme=dark], [data-theme=dark] *));
+
+/* Paleta customizada baseada em #4345a5 */
+@theme {
+  --color-font-primary: #374151;   /* gray-700 */
+  --color-font-secondary: #6b7280; /* gray-500 */
+
+  --color-primary: #4345a5;
+  --color-primary-light: #6366f1;
+  --color-primary-dark: #23246a;
+  --color-accent: #7c7edc;
+  --color-background: #f5f6fa;
+  --color-background-secundary: #e5e7eb;
+  --color-window: #f5f6fa;
+  --color-surface: #ffffff;
+  --color-on-primary: #ffffff;
+  --color-on-surface: #23246a;
+
+  /* Hovers */
+  --color-primary-hover: #a5b4fc; /* mais claro para hover */
+  --color-accent-hover: #4345a5; /* usa o roxo base para hover do accent */
+  --color-surface-hover: #f0f1fa;
+}
+
+[data-theme="dark"] {
+  --color-font-primary: #6b7280;   /* gray-500 */
+  --color-font-secondary: #99a1af; /* gray-400 */
+
+  --color-primary: #6366f1; /* Um roxo mais claro para contraste */
+  --color-primary-light: #a5b4fc; /* Roxo claro */
+  --color-primary-dark: #4345a5; /* Roxo base */
+  --color-accent: #818cf8; /* Roxo acentuado */
+  --color-background: #1f2937; /* gray-800 */
+  --color-surface: #272e3f; /* Um cinza mais claro para cards */
+  --color-on-primary: #ffffff;
+  --color-on-surface: #e5e7eb; /* gray-200 */
+
+  /* Hovers */
+  --color-primary-hover: #6366f1; /* ainda mais claro para hover */
+  --color-accent-hover: #6366f1; /* roxo claro para hover do accent */
+  --color-surface-hover: #32375a;
+}
+
+#App {
+  @apply bg-background text-font-primary;
+}
+
+#root {
+  font-family: "Roboto", Arial, sans-serif;
+  @apply h-dvh flex flex-col;
+}
+
+/* Region Inputs */
+.p-password,
+.p-icon-field,
+.p-icon-field > input {
+  @apply w-full rounded-l-none;
+}
+
+.btn-primary {
+  @apply p-2 bg-primary-light text-white hover:bg-primary-hover cursor-pointer rounded;
+}
+
+.btn-cancel {
+  
+}
+
+/* End region Inputs */
+
+.selected{
+  @apply bg-background-secundary dark:text-font-primary;
+}
+
+.p-datatable{
+  @apply rounded-md overflow-hidden shadow;
+}
+
+.p-datatable-table > .p-datatable-thead > tr > th{
+  @apply bg-background text-font-secondary;
+}
