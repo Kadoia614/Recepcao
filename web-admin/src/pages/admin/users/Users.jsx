@@ -8,15 +8,16 @@ import { UserProvider } from "@Context/users/UsersProvider";
 
 const Users = () => {
   // UserModal
-  const [isVisible, setIsVisible] = useState(false);
+  const [isEditVisible, setIsEditVisible] = useState(false);
+  const [isExcludeVisible, setIsExcludeVisible] = useState(false);
 
   return (
     <UserProvider>
       <UserModal
-        visible={isVisible}
-        onHide={() => setIsVisible(false)}
+        visible={isEditVisible}
+        onHide={() => setIsEditVisible(false)}
       />
-      <UserTable setIsVisible={setIsVisible} />
+      <UserTable setEditIsVisible={setIsEditVisible} setExcludeIsVisible={setIsExcludeVisible} />
     </UserProvider>
   );
 };

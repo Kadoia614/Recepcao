@@ -1,5 +1,40 @@
 import { FastifyInstance } from "fastify";
-import { createUserController, getUsersController } from "../controller/user/userController.js";
+import {
+  createUserController,
+  deleteUserController,
+  getUsersController,
+  updateUserController,
+} from "../controller/user/userController.js";
+
+const userSchema = {
+  type: "object",
+  required: ["first_name", "last_name", "role", "email", "password", "cpf"],
+  properties: {
+    first_name: { type: "string" },
+    last_name: { type: "string" },
+    role: { type: "string" },
+    email: { type: "string", format: "email" },
+    password: { type: "string", minLength: 6 },
+    cpf: { type: "string" },
+  },
+  additionalProperties: false,
+};
+
+const responseUserSchema = {
+  type: "object",
+  properties: {
+    uuid: { type: "string" },
+    first_name: { type: "string" },
+    last_name: { type: "string" },
+    role: { type: "string" },
+    email: { type: "string" },
+    cpf: { type: "string" },
+    username: { type: "string" },
+    created_at: { type: "string", format: "date-time" },
+    updated_at: { type: "string", format: "date-time" },
+    deletedAt: { type: "string", format: "date-time", nullable: true },
+  },
+};
 
 export async function userRouter(app: FastifyInstance) {
   app.route({
@@ -17,7 +52,6 @@ export async function userRouter(app: FastifyInstance) {
           "last_name",
           "role",
           "email",
-          "password",
           "cpf",
         ], // Definindo as propriedades obrigatórias
         properties: {
@@ -25,8 +59,45 @@ export async function userRouter(app: FastifyInstance) {
           last_name: { type: "string" },
           role: { type: "string" },
           email: { type: "string" },
-          password: { type: "string" },
           cpf: { type: "string" },
+        },
+      },
+      response: {
+        201: {
+          description: "User created successfully",
+          type: "object",
+          properties: {
+            message: { type: "string" },
+            newUser: responseUserSchema,
+          },
+        },
+        400: {
+          description: "Bad Request",
+          type: "object",
+          properties: {
+            message: { type: "string", example: "Invalid input data" },
+          },
+        },
+        401: {
+          description: "Unauthorized",
+          type: "object",
+          properties: {
+            message: { type: "string", example: "Unauthorized" },
+          },
+        },
+        403: {
+          description: "Forbidden",
+          type: "object",
+          properties: {
+            message: { type: "string", example: "User already exists" },
+          },
+        },
+        500: {
+          description: "Internal Server Error",
+          type: "object",
+          properties: {
+            message: { type: "string", example: "Impossible create user" },
+          },
         },
       },
     },
@@ -34,8 +105,155 @@ export async function userRouter(app: FastifyInstance) {
   });
 
   app.route({
+    method: "PUT",
+    url: "/:uuid",
+    schema: {
+      tags: ["User"],
+      description:
+        "Let you update Users and usage the application",
+      summary: "Update New User",
+      body: {
+        type: "object", // Use 'object' para definir o corpo
+        required: [
+          "first_name",
+          "last_name",
+          "role",
+          "email",
+          "cpf",
+        ], // Definindo as propriedades obrigatórias
+        properties: {
+          first_name: { type: "string" }, // Definindo os tipos de cada campo
+          last_name: { type: "string" },
+          role: { type: "string" },
+          email: { type: "string" },
+          cpf: { type: "string" },
+        },
+      },
+      response: {
+        200: {
+          description: "User created successfully",
+          type: "object",
+          properties: {
+            message: { type: "string" },
+            user: responseUserSchema,
+          },
+        },
+        400: {
+          description: "Bad Request",
+          type: "object",
+          properties: {
+            message: { type: "string", example: "Invalid input data" },
+          },
+        },
+        401: {
+          description: "Unauthorized",
+          type: "object",
+          properties: {
+            message: { type: "string", example: "Unauthorized" },
+          },
+        },
+        403: {
+          description: "Forbidden",
+          type: "object",
+          properties: {
+            message: { type: "string", example: "User already exists" },
+          },
+        },
+        404: {
+          description: "Not Found",
+          type: "object",
+          properties: {
+            message: { type: "string", example: "User not found" },
+          },
+        },
+        500: {
+          description: "Internal Server Error",
+          type: "object",
+          properties: {
+            message: { type: "string", example: "Impossible create user" },
+          },
+        },
+      },
+    },
+    handler: updateUserController, // Seu controlador
+  });
+
+  app.route({
     method: "GET",
     url: "/",
-    handler: getUsersController
-  })
+    schema: {
+      tags: ["User"],
+      description: "Get all users",
+      summary: "Get Users",
+      response: {
+        200: {
+          description: "List of users",
+          type: "object",
+          properties: {
+            user: {
+              type: "array",
+              items: responseUserSchema,
+            },
+          },
+        },
+        401: {
+          description: "Unauthorized",
+          type: "object",
+          properties: {
+            message: { type: "string", example: "Unauthorized" },
+          },
+        },
+        500: {
+          description: "Internal Server Error",
+          type: "object",
+          properties: {
+            message: { type: "string", example: "Impossible list users" },
+          },
+        },
+      },
+    },
+    handler: getUsersController,
+  });
+
+  app.route({
+    method: "delete",
+    url: "/:uuid",
+    schema: {
+      tags: ["User"],
+      description:
+        "Let you Delete Users in the application",
+      summary: "Delete Users",
+      response: {
+        200: {
+          description: "User Delete successfully",
+          type: "object",
+          properties: {
+            message: { type: "string", example: "user deleted successfully" },
+          },
+        },
+        401: {
+          description: "Unauthorized",
+          type: "object",
+          properties: {
+            message: { type: "string", example: "Unauthorized" },
+          },
+        },
+        404: {
+          description: "Not Found",
+          type: "object",
+          properties: {
+            message: { type: "string", example: "User not found" },
+          },
+        },
+        500: {
+          description: "Internal Server Error",
+          type: "object",
+          properties: {
+            message: { type: "string", example: "Impossible Delete user" },
+          },
+        },
+      },
+    },
+    handler: deleteUserController, // Seu controlador
+  });
 }

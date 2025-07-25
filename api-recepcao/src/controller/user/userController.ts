@@ -20,13 +20,13 @@ export const createUserController = async (
     }
 
     reply
-      .status(result.code)
+      .status(result.code || 201)
       .send({ message: result.message, newUser: result.user });
   } catch (error: any) {
     throw {
       ok: error.ok,
       code: error.code || 500,
-      message: error.message || "Impossível criar o usuário",
+      message: error.message || "Impossible create user",
     };
   }
 };
@@ -66,18 +66,43 @@ export const updateUserController = async (
     const data = request.body;
     const { uuid } = request.params;
 
-    const response = await UserService.alterUser(uuid, data);
+    const result = await UserService.alterUser(uuid, data);
 
-    response.ok
-      ? reply
-          .status(response.code)
-          .send({ message: response.message, user: response.user })
-      : reply.status(response.code).send({ message: response.message });
+   if (!result.ok) {
+      throw { ok: false, code: result.code, message: result.message };
+    }
+
+    reply
+      .status(result.code || 201)
+      .send({ message: result.message, user: result.user });
   } catch (error: any) {
     throw {
       ok: error.ok,
       code: error.code || 500,
       message: error.message || "Impossível atualizar o usuário",
+    };
+  }
+};
+
+export const deleteUserController = async (
+  request: FastifyRequest<{ Params: UserParams }>,
+  reply: FastifyReply
+): Promise<void> => {
+  try {
+    const { uuid } = request.params;
+
+    const result = await UserService.deleteUser(uuid);
+
+    if (!result.ok) {
+      throw { ok: false, code: result.code, message: result.message };
+    }
+
+    reply.status(result.code || 200).send({ message: result.message });
+  } catch (error: any) {
+    throw {
+      ok: error.ok,
+      code: error.code || 500,
+      message: error.message || "Impossível deletar o usuário",
     };
   }
 };

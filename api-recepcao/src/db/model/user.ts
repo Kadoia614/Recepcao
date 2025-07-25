@@ -20,7 +20,7 @@ export class UserDB extends Model<
   declare email: string;
   declare cpf: string;
   declare password: string;
-  declare role: "admin" | "user";
+  declare role: "admin" | "user" | "recepcionist" | "superadmin";
   
   declare firstLogin: CreationOptional<boolean>;
   declare createdAt: CreationOptional<Date>;

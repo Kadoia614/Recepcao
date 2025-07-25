@@ -40,9 +40,8 @@ export type GetVisitorssResponse = getVisitorsSucess | getVisitorsFail;
 
 interface VisitorsSuccessful {
   ok: true;
-  code: number;
   message: string;
-  visitors: VisitorsAtributes;
+  visitor: VisitorsAtributes;
 }
 
 interface VisitorsFail {

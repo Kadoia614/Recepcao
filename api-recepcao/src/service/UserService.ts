@@ -1,4 +1,5 @@
 import bcrypt from "bcryptjs";
+import { Op } from "sequelize";
 import { UserDB } from "../db/model/user.js";
 import {
   UserAtributes,
@@ -6,33 +7,52 @@ import {
   UserGenericResponse,
   UserQueryParams,
   GetUserGenericResponse,
+  GenericResponse,
 } from "../types/userTypes.js";
 import validatorCPF from "../utils/validatorCPF.js";
-import { Op } from "sequelize";
+import { generateStrongPassword } from "../utils/passwordGenerator.js";
+import { sendMail } from "../utils/sendMail.js";
+
+// Função utilitária para validar role
+const isValidRole = (role: string) =>
+  ["admin", "user", "recepcionist", "superadmin"].includes(role);
+
+// Função utilitária para verificar duplicidade de email/cpf
+const isDuplicateUser = async (
+  email: string,
+  cpf: string,
+  excludeUuid?: string
+) => {
+  const where: any = {
+    [Op.or]: [{ email }, { cpf }],
+  };
+  if (excludeUuid) {
+    where.uuid = { [Op.ne]: excludeUuid };
+  }
+  return await UserDB.findOne({ where });
+};
 
 export class UserService {
   static async findUserByUsername(
     username: string
   ): Promise<UserAtributes | null> {
     const user = await UserDB.findOne({ where: { username } });
-
     return user ? (user.toJSON() as UserAtributes) : null;
   }
 
   static async CreateUser(data: UserRequired): Promise<UserGenericResponse> {
-    // valida role
-    if (data.role !== "admin" && data.role !== "user") {
+    // Validações
+    if (!isValidRole(data.role)) {
       return {
         ok: false,
         code: 400,
-        message: "O campo 'role' deve ser 'admin' ou 'user'",
+        message:
+          "the field 'role' must be 'admin', 'user', 'recepcionist' or 'superadmin'",
       };
     }
 
-    // valida CPF
-    const isValid = validatorCPF(data.cpf);
-
-    if (!isValid.ok) {
+    const cpfValidation = validatorCPF(data.cpf);
+    if (!cpfValidation.ok) {
       return {
         ok: false,
         code: 403,
@@ -40,14 +60,8 @@ export class UserService {
       };
     }
 
-    // verifica se já existe com o mesmo email
-    const alreadyCreated = await UserDB.findOne({
-      where: {
-        email: data.email,
-      },
-    });
-
-    if (alreadyCreated) {
+    // Verifica duplicidade
+    if (await isDuplicateUser(data.email, data.cpf)) {
       return {
         ok: false,
         code: 403,
@@ -55,12 +69,15 @@ export class UserService {
       };
     }
 
-    // define username e criptografa password
-    data.username = data.first_name.concat("." + data.last_name).toLowerCase();
-    data.password = await bcrypt.hash(data.password, 10);
+    // Define username e criptografa senha
+    const password = generateStrongPassword()
+    data.username = `${data.first_name}.${data.last_name}`.toLowerCase();
+    const hashPassword = await bcrypt.hash(password, 10);
 
-    // cria user
-    const newUser = await UserDB.create({ ...data });
+    // Cria usuário
+    const newUser = await UserDB.create({ ...data, password: hashPassword });
+
+    sendMail(data.email, "Reception Password", `Your password is: ${password}`)
 
     return {
       ok: true,
@@ -75,9 +92,9 @@ export class UserService {
     data: UserRequired
   ): Promise<UserGenericResponse> {
     try {
-      const isUser = await UserDB.findByPk(id);
-
-      if (!isUser) {
+      const user = await UserDB.findByPk(id);
+      
+      if (!user) {
         return {
           ok: false,
           code: 404,
@@ -85,19 +102,47 @@ export class UserService {
         };
       }
 
-      isUser.first_name = data.first_name;
-      isUser.last_name = data.last_name;
-      isUser.email = data.email;
-      isUser.role = data.role;
-      isUser.cpf = data.cpf;
+      if (!isValidRole(data.role)) {
+        return {
+          ok: false,
+          code: 400,
+          message:
+            "O campo 'role' deve ser 'admin', 'user', 'recepcionist' ou 'superadmin'",
+        };
+      }
 
-      isUser.save();
+      const cpfValidation = validatorCPF(data.cpf);
+      if (!cpfValidation.ok) {
+        return {
+          ok: false,
+          code: 403,
+          message: "CPF inválido",
+        };
+      }
+
+      if (await isDuplicateUser(data.email, data.cpf, id)) {
+        return {
+          ok: false,
+          code: 403,
+          message: "Usuário Já existe",
+        };
+      }
+
+      // Atualiza campos
+      user.first_name = data.first_name;
+      user.last_name = data.last_name;
+      user.username = `${data.first_name}.${data.last_name}`.toLowerCase();
+      user.email = data.email;
+      user.role = data.role;
+      user.cpf = data.cpf;
+
+      await user.save();
 
       return {
         ok: true,
         code: 200,
         message: "Alterado com sucesso",
-        user: isUser,
+        user: user,
       };
     } catch (error: any) {
       return {
@@ -146,6 +191,26 @@ export class UserService {
       message: "Usuários encontrados com sucesso",
       user: result.rows,
       count: result.count,
+    };
+  }
+
+  static async deleteUser(uuid: string): Promise<GenericResponse> {
+    const user = await UserDB.findByPk(uuid);
+
+    if (!user) {
+      return {
+        ok: false,
+        code: 404,
+        message: "Usuário não encontrado",
+      };
+    }
+
+    await user.destroy();
+
+    return {
+      ok: true,
+      code: 200,
+      message: "user deleted successfully",
     };
   }
 }

@@ -7,7 +7,7 @@ export interface UserRequired {
   first_name: string;
   last_name: string;
   username: string;
-  role: "admin" | "user";
+  role: "admin" | "user" | "recepcionist" | "superadmin";
   email: string;
   password: string;
   cpf: string;
@@ -54,9 +54,14 @@ interface UserFail {
 
 export type UserGenericResponse = userSuccessful | UserFail;
 
-
 export type UserQueryParams = {
   search?: string;
   page?: number;
   limit?: number;
 };
+
+export interface GenericResponse {
+  ok: boolean;
+  code: number;
+  message: string;
+}

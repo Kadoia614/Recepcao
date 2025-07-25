@@ -10,6 +10,7 @@ import { useForm, Controller } from "react-hook-form";
 
 import { useUsers } from "@Context/users/UsersContext";
 import { postUser } from "@API/User";
+import { use, useEffect } from "react";
 
 const rolesOption = [
   { label: "Admin", value: "admin" },
@@ -18,7 +19,7 @@ const rolesOption = [
 
 const UserModal = ({ data, visible, onHide }) => {
   const { showToast } = useToast();
-  const { addUsers } = useUsers();
+  const { addUsers, userTarget } = useUsers();
   const {
     register,
     control,
@@ -26,12 +27,16 @@ const UserModal = ({ data, visible, onHide }) => {
     formState: { errors },
     reset,
   } = useForm({
-    first_name: "kadoia",
-    last_name: "",
-    role: "",
-    email: "",
-    password: "",
-    cpf: "",
+    defaultValues: {
+      uuid: null,
+      first_name: "",
+      last_name: "",
+      role: "",
+      email: "",
+      password: "",
+      cpf: "",
+    },
+    mode: "onBlur",
   });
 
   const onSubmit = async (data) => {
@@ -58,6 +63,18 @@ const UserModal = ({ data, visible, onHide }) => {
       return;
     }
   };
+
+  useEffect(() => {
+    if (userTarget) {
+      reset({
+        first_name: userTarget.first_name,
+        last_name: userTarget.last_name,
+        role: userTarget.role,
+        email: userTarget.email,
+        cpf: userTarget.cpf,
+      });
+    }
+  }, [userTarget, reset]);
 
   return (
     <Dialog
@@ -120,22 +137,6 @@ const UserModal = ({ data, visible, onHide }) => {
 
         <div>
           <label className="font-medium">Senha</label>
-          <Controller
-            name="password"
-            control={control}
-            rules={{
-              required: "Obrigatório",
-              minLength: { value: 6, message: "Mínimo de 6 caracteres" },
-            }}
-            render={({ field }) => (
-              <Password
-                feedback={false}
-                toggleMask
-                className={errors.password ? "p-invalid w-full" : "w-full"}
-                {...field}
-              />
-            )}
-          />
           {errors.password && (
             <small className="text-red-500">{errors.password.message}</small>
           )}
