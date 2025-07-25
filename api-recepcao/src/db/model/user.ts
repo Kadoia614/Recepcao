@@ -60,7 +60,7 @@ UserDB.init(
       allowNull: false,
     },
     role: {
-      type: DataTypes.ENUM("admin", "user"),
+      type: DataTypes.ENUM("admin", "user", "recepcionist", "superadmin"),
       allowNull: false,
     },
     firstLogin: {

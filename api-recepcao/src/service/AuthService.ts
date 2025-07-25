@@ -3,7 +3,7 @@ import bcrypt from "bcryptjs";
 import { UserService } from "./UserService.js";
 import { AuthResult } from "../types/authTypes.js";
 
-import { SECRET_KEY } from "../config/env.js";
+import { SECRET_KEY_JWT } from "../config/env.js";
 
 export class Auth {
   static async Login(username: string, password: string): Promise<AuthResult> {
@@ -24,7 +24,7 @@ export class Auth {
 
       const token = jwt.sign(
         { id: user.uuid, name: user.username, role: user.role },
-        SECRET_KEY!,
+        SECRET_KEY_JWT!,
         { expiresIn: "1h" }
       );
 

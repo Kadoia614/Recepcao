@@ -8,17 +8,29 @@ import {
 
 const userSchema = {
   type: "object",
-  required: ["first_name", "last_name", "role", "email", "password", "cpf"],
+  required: ["first_name", "last_name", "role", "email", "cpf"],
   properties: {
     first_name: { type: "string" },
     last_name: { type: "string" },
     role: { type: "string" },
     email: { type: "string", format: "email" },
-    password: { type: "string", minLength: 6 },
     cpf: { type: "string" },
   },
   additionalProperties: false,
 };
+
+const userUpdateSchema = {
+  type: "object",
+  required: ["first_name", "last_name", "role", "email"],
+  properties: {
+    first_name: { type: "string" },
+    last_name: { type: "string" },
+    role: { type: "string" },
+    email: { type: "string", format: "email" },
+  },
+  additionalProperties: false,
+};
+
 
 const responseUserSchema = {
   type: "object",
@@ -28,11 +40,7 @@ const responseUserSchema = {
     last_name: { type: "string" },
     role: { type: "string" },
     email: { type: "string" },
-    cpf: { type: "string" },
     username: { type: "string" },
-    created_at: { type: "string", format: "date-time" },
-    updated_at: { type: "string", format: "date-time" },
-    deletedAt: { type: "string", format: "date-time", nullable: true },
   },
 };
 
@@ -45,23 +53,7 @@ export async function userRouter(app: FastifyInstance) {
       description:
         "Let you create new Users to login and usage the application",
       summary: "Create New User",
-      body: {
-        type: "object", // Use 'object' para definir o corpo
-        required: [
-          "first_name",
-          "last_name",
-          "role",
-          "email",
-          "cpf",
-        ], // Definindo as propriedades obrigatórias
-        properties: {
-          first_name: { type: "string" }, // Definindo os tipos de cada campo
-          last_name: { type: "string" },
-          role: { type: "string" },
-          email: { type: "string" },
-          cpf: { type: "string" },
-        },
-      },
+      body: userSchema,
       response: {
         201: {
           description: "User created successfully",
@@ -109,26 +101,9 @@ export async function userRouter(app: FastifyInstance) {
     url: "/:uuid",
     schema: {
       tags: ["User"],
-      description:
-        "Let you update Users and usage the application",
+      description: "Let you update Users and usage the application",
       summary: "Update New User",
-      body: {
-        type: "object", // Use 'object' para definir o corpo
-        required: [
-          "first_name",
-          "last_name",
-          "role",
-          "email",
-          "cpf",
-        ], // Definindo as propriedades obrigatórias
-        properties: {
-          first_name: { type: "string" }, // Definindo os tipos de cada campo
-          last_name: { type: "string" },
-          role: { type: "string" },
-          email: { type: "string" },
-          cpf: { type: "string" },
-        },
-      },
+      body: userUpdateSchema,
       response: {
         200: {
           description: "User created successfully",
@@ -220,8 +195,7 @@ export async function userRouter(app: FastifyInstance) {
     url: "/:uuid",
     schema: {
       tags: ["User"],
-      description:
-        "Let you Delete Users in the application",
+      description: "Let you Delete Users in the application",
       summary: "Delete Users",
       response: {
         200: {

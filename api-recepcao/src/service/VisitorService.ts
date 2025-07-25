@@ -79,13 +79,14 @@ export class VisitorsService {
     visitorData: VisitorsRequired
   ): Promise<VisitorsGenericResponse> {
     try {
-      const visitor = await Visitors.create(visitorData);
+      const newVisitor = await Visitors.create(visitorData);
       return {
         ok: true,
         message: "Visitante criado com sucesso",
-        visitor,
+        visitor: newVisitor.toJSON(),
       };
     } catch (error) {
+      console.log(error)
       return {
         ok: false,
         code: 500,

@@ -2,9 +2,9 @@ import { useState } from "react";
 
 import UserTable from "./table/UserTable";
 import UserModal from "./modal/UserModal";
+import UserDeleteModal from "./modal/UserDeleteModal";
 
 import { UserProvider } from "@Context/users/UsersProvider";
-
 
 const Users = () => {
   // UserModal
@@ -17,7 +17,15 @@ const Users = () => {
         visible={isEditVisible}
         onHide={() => setIsEditVisible(false)}
       />
-      <UserTable setEditIsVisible={setIsEditVisible} setExcludeIsVisible={setIsExcludeVisible} />
+
+      <UserDeleteModal
+        visible={isExcludeVisible}
+        onHide={() => setIsExcludeVisible(false)}
+      />
+      <UserTable
+        setEditIsVisible={setIsEditVisible}
+        setExcludeIsVisible={setIsExcludeVisible}
+      />
     </UserProvider>
   );
 };

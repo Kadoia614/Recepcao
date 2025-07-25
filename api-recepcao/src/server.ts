@@ -31,7 +31,7 @@ app.register(fastifySwagger, {
 });
 
 app.register(fastifySwaggerUi, {
-  routePrefix: "/docs",
+  routePrefix: "/documentation",
 });
 
 app.setErrorHandler((error, request, reply) => {

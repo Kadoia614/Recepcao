@@ -20,7 +20,7 @@ const isValidRole = (role: string) =>
 // Função utilitária para verificar duplicidade de email/cpf
 const isDuplicateUser = async (
   email: string,
-  cpf: string,
+  cpf?: string | null,
   excludeUuid?: string
 ) => {
   const where: any = {
@@ -70,14 +70,14 @@ export class UserService {
     }
 
     // Define username e criptografa senha
-    const password = generateStrongPassword()
+    const password = generateStrongPassword();
     data.username = `${data.first_name}.${data.last_name}`.toLowerCase();
     const hashPassword = await bcrypt.hash(password, 10);
 
     // Cria usuário
     const newUser = await UserDB.create({ ...data, password: hashPassword });
 
-    sendMail(data.email, "Reception Password", `Your password is: ${password}`)
+    sendMail(data.email, "Reception Password", `Your password is: ${password}`);
 
     return {
       ok: true,
@@ -93,7 +93,7 @@ export class UserService {
   ): Promise<UserGenericResponse> {
     try {
       const user = await UserDB.findByPk(id);
-      
+
       if (!user) {
         return {
           ok: false,
@@ -111,16 +111,7 @@ export class UserService {
         };
       }
 
-      const cpfValidation = validatorCPF(data.cpf);
-      if (!cpfValidation.ok) {
-        return {
-          ok: false,
-          code: 403,
-          message: "CPF inválido",
-        };
-      }
-
-      if (await isDuplicateUser(data.email, data.cpf, id)) {
+      if (await isDuplicateUser(data.email, null, id)) {
         return {
           ok: false,
           code: 403,
@@ -134,7 +125,6 @@ export class UserService {
       user.username = `${data.first_name}.${data.last_name}`.toLowerCase();
       user.email = data.email;
       user.role = data.role;
-      user.cpf = data.cpf;
 
       await user.save();
 
@@ -181,6 +171,7 @@ export class UserService {
 
     const result = await UserDB.findAndCountAll({
       where,
+      attributes: { exclude: ["password", "cpf"] },
       offset,
       limit: Number(limit),
       order: [["createdAt", "DESC"]],

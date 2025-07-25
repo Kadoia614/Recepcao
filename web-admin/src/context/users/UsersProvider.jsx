@@ -11,12 +11,14 @@ export const UserProvider = ({ children }) => {
   };
 
   const removeUsers = (userId) => {
-    setUsers((prevUsers) => prevUsers.filter(user => user.id !== userId));
+    // Filter out the user with the specified ID
+    setUsers((prevUsers) => 
+      prevUsers.filter(user => user.uuid != userId));
   };
 
   const updateUsers = (updatedUser) => {
     setUsers((prevUsers) =>
-      prevUsers.map(user => user.id === updatedUser.id ? updatedUser : user)
+      prevUsers.map(user => user.uuid === updatedUser.uuid ? updatedUser : user)
     );
   };
 

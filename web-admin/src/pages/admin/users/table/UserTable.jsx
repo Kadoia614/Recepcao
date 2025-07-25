@@ -12,10 +12,11 @@ import { useUsers } from "@Context/users/UsersContext";
 import { getUser } from "@API/User";
 
 const columns = [
-  { field: "first_name", header: "First_Name" },
-  { field: "last_name", header: "Last_Name" },
+  { field: "first_name", header: "First Name" },
+  { field: "last_name", header: "Last Name" },
   { field: "username", header: "Username" },
   { field: "email", header: "Email" },
+  { field: "role", header: "Role" },
 ];
 
 const UserTable = ({ setEditIsVisible, setExcludeIsVisible }) => {
