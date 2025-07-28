@@ -26,22 +26,20 @@ const visitorResponse = {
   properties: {
     uuid: { type: "string", example: "123e4567-e89b-12d3-a456-426614174000" },
     name: { type: "string", example: "João da Silva" },
-    photo: {
-      type: "string",
-      example: "http://example.com/photo.jpg",
-      nullable: true,
-    },
-    email: {
-      type: "string",
-      example: "seuemail@itapecerica.sp.gov.br",
-      nullable: true,
-    },
-    phone: { type: "string", example: "11999999999", nullable: true },
+
+    email: { type: "string", nullable: true, example: "kadoia@gmail.com" },
+    phone: { type: "string", nullable: true, example: "11987654321" },
+    address: { type: "string", nullable: true, example: "Rua Exemplo, 123" },
+    city: { type: "string", nullable: true, example: "São Paulo" },
+    state: { type: "string", nullable: true, example: "SP" },
+    zipCode: { type: "string", nullable: true, example: "01000-000" },
+
     createdAt: {
       type: "string",
       format: "date-time",
       example: "2023-10-01T12:00:00Z",
     },
+
     updatedAt: {
       type: "string",
       format: "date-time",
@@ -63,7 +61,7 @@ export async function visitorRouter(app: FastifyInstance) {
           type: "object",
           properties: {
             message: { type: "string" },
-            visitors: {
+            visitor: {
               type: "array",
               items: visitorResponse,
             },

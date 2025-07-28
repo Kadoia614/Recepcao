@@ -8,12 +8,17 @@ export const UserProvider = ({ children }) => {
 
   const addUsers = (newUser) => {
     setUsers((prevUsers) => [...prevUsers, newUser]);
+
+    setTotalUsers(e => e + 1);
   };
 
   const removeUsers = (userId) => {
     // Filter out the user with the specified ID
     setUsers((prevUsers) => 
       prevUsers.filter(user => user.uuid != userId));
+
+    setTotalUsers(e => e - 1);
+
   };
 
   const updateUsers = (updatedUser) => {

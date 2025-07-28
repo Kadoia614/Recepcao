@@ -12,18 +12,38 @@ export class VisitorsService {
     query: VisitorsQueryParams
   ): Promise<GetVisitorssResponse> {
     try {
-      const { search, page = 1, limit = 10 } = query;
-      const offset = (page - 1) * limit;
+      const {
+        page = "0",
+        limit = "10",
+        search = "",
+      } = query as {
+        page?: string;
+        limit?: string;
+        search?: string;
+      };
+      const offset = Number(page) * Number(limit);
 
-      const where: any = {};
-      if (search) {
-        where.name = { [Op.like]: `%${search}%` };
-      }
+      const where = search
+        ? {
+            [Op.or]: [{ name: { [Op.like]: `%${search}%` } }],
+          }
+        : {};
 
       const { count, rows } = await Visitors.findAndCountAll({
         where,
-        limit,
+        attributes: {
+          exclude: [
+            "cpf",
+            // "email",
+            // "phone",
+            // "address",
+            // "city",
+            // "state",
+            // "zipCode",
+          ],
+        },
         offset,
+        limit: Number(limit),
         order: [["createdAt", "DESC"]],
       });
 
@@ -31,7 +51,7 @@ export class VisitorsService {
         return {
           ok: true,
           message: "Nenhum visitante encontrado",
-          visitors: [],
+          visitor: [],
           count: 0,
         };
       }
@@ -39,11 +59,11 @@ export class VisitorsService {
       return {
         ok: true,
         message: "Visitantes listados com sucesso",
-        visitors: rows,
+        visitor: rows,
         count,
       };
     } catch (error) {
-      return {
+      throw {
         ok: false,
         code: 500,
         message: "Erro ao listar visitantes",
@@ -86,7 +106,7 @@ export class VisitorsService {
         visitor: newVisitor.toJSON(),
       };
     } catch (error) {
-      console.log(error)
+      console.log(error);
       return {
         ok: false,
         code: 500,
@@ -102,7 +122,7 @@ export class VisitorsService {
     try {
       const updatedVisitor = await Visitors.findOne({ where: { uuid } });
 
-      if(!updatedVisitor) {
+      if (!updatedVisitor) {
         return {
           ok: false,
           code: 404,

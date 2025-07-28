@@ -9,7 +9,7 @@ import { Button } from "primereact/button";
 import { useEffect, useState } from "react";
 import { useToast } from "@Context/toast/ToastContext";
 import { useUsers } from "@Context/users/UsersContext";
-import { getUser } from "@API/User";
+import { getUser } from "@Service/User";
 
 const columns = [
   { field: "first_name", header: "First Name" },
@@ -100,7 +100,7 @@ const UserTable = ({ setEditIsVisible, setExcludeIsVisible }) => {
         </span>
       </div>
       <TableHeader
-        start={
+        end={
           <div className="md:flex items-center gap-2">
             <Button
               label="New user"
@@ -111,7 +111,7 @@ const UserTable = ({ setEditIsVisible, setExcludeIsVisible }) => {
           </div>
         }
         center={<h2 className="text-2xl font-bold">Users</h2>}
-        end={
+        start={
           <div className="flex items-center gap-4">
             <span>Total Users: {totalUsers}</span>
           </div>
@@ -128,12 +128,12 @@ const UserTable = ({ setEditIsVisible, setExcludeIsVisible }) => {
         rows={query.limit}
         totalRecords={totalUsers}
         rowsPerPageOptions={[1, 10, 20, 30]}
-        onPageChange={(e) =>
+        onPageChange={(e) =>{
           setQuery((prev) => ({
             ...prev,
-            page: e.first,
+            page: e.page,
             limit: e.rows,
-          }))
+          }))}
         }
       />
     </section>

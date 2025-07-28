@@ -26,7 +26,7 @@ export interface VisitorsAtributes extends VisitorsRequired, VisitorsOptional {}
 interface getVisitorsSucess {
   ok: true;
   message: string;
-  visitors: VisitorsAtributes[];
+  visitor: VisitorsAtributes[];
   count: number
 }
 

@@ -169,6 +169,8 @@ export async function userRouter(app: FastifyInstance) {
               type: "array",
               items: responseUserSchema,
             },
+            count: { type: "integer" },
+            message: { type: "string" },
           },
         },
         401: {

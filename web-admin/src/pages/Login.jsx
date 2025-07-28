@@ -8,7 +8,7 @@ import { useAuth } from "../context/auth/AuthContext";
 
 import { useNavigate } from "react-router-dom";
 
-import {handdleLogin} from '@API/Login'
+import {handdleLogin} from '@Service/Login'
 
 import { useToast } from '@Context/toast/ToastContext'
 

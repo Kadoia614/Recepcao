@@ -1,4 +1,4 @@
-import API from "./API";
+import API from "@API/API";
 
 export const getUser = async (page, limit, search) => {
   const url = search
@@ -17,18 +17,9 @@ export const getUser = async (page, limit, search) => {
 };
 
 export const postUser = async (newUser) => {
-  const { data } = await API.post(
-    "/user",
-    {
-      first_name: newUser.first_name,
-      last_name: newUser.last_name,
-      role: newUser.role,
-      email: newUser.email,
-      password: newUser.password,
-      cpf: newUser.cpf,
-    },
-    { headers: { Authorization: localStorage.getItem("token") } }
-  );
+  const { data } = await API.post("/user", newUser, {
+    headers: { Authorization: localStorage.getItem("token") },
+  });
 
   return data;
 };

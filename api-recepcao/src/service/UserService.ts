@@ -164,7 +164,6 @@ export class UserService {
             { first_name: { [Op.like]: `%${search}%` } },
             { last_name: { [Op.like]: `%${search}%` } },
             { email: { [Op.like]: `%${search}%` } },
-            { cpf: { [Op.like]: `%${search}%` } },
           ],
         }
       : {};

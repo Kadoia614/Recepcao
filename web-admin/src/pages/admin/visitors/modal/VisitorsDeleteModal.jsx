@@ -3,19 +3,21 @@ import { Button } from "primereact/button";
 import { deleteUser } from "@Service/User";
 
 import { useUsers } from "@Context/users/UsersContext";
+import { useVisitors } from "@Context/visitors/VisitorsContext";
+
 import { useToast } from "@Context/toast/ToastContext";
 
-const UserDeleteModal = ({ visible, onHide }) => {
+const VisitorsDeleteModal = ({ visible, onHide }) => {
   const { showToast } = useToast();
   // Context to manage user data
-  const { userTarget, setUserTarget, removeUsers } = useUsers();
+  const { visitorTarget, setVisitorTarget, removeVisitor } = useVisitors();
 
   // Submissão do formulário
   const onConfirm = async () => {
     try {
       const { message } = await deleteUser(userTarget.uuid);
       // Remove user from context
-      removeUsers(userTarget.uuid);
+      removeVisitor(visitorTarget.uuid);
       showToast("success", "Sucesso", message || "Deleted successfully");
 
       handleClose();
@@ -30,7 +32,7 @@ const UserDeleteModal = ({ visible, onHide }) => {
 
   // Fecha modal e reseta o target
   const handleClose = () => {
-    setUserTarget(null);
+    setVisitorTarget(null);
     onHide();
   };
 
@@ -45,10 +47,7 @@ const UserDeleteModal = ({ visible, onHide }) => {
     >
       <div className="mb-4">
         <p>
-          Are you sure you want to delete the user?{" "}
-          <b>
-            {userTarget?.first_name} {userTarget?.last_name}
-          </b>
+          Are you sure you want to delete the Visitor? <b>{visitorTarget?.name}</b>
           ?
         </p>
       </div>
@@ -70,4 +69,4 @@ const UserDeleteModal = ({ visible, onHide }) => {
   );
 };
 
-export default UserDeleteModal;
+export default VisitorsDeleteModal;

@@ -6,7 +6,7 @@ import { Button } from "primereact/button";
 import { useToast } from "@Context/toast/ToastContext";
 import { useForm, Controller } from "react-hook-form";
 import { useUsers } from "@Context/users/UsersContext";
-import { postUser, updateUser } from "@API/User";
+import { postUser, updateUser } from "@Service/User";
 import { useEffect } from "react";
 
 const rolesOption = [

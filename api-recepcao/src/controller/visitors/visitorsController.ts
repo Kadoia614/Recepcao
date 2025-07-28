@@ -21,7 +21,7 @@ export const getVisitorsController = async (
 
     reply.status(200).send({
       message: response.message,
-      visitors: response.visitors,
+      visitor: response.visitor,
       count: response.count,
     });
   } catch (error: any) {
