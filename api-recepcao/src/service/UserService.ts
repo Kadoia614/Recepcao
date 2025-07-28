@@ -71,11 +71,11 @@ export class UserService {
 
     // Define username e criptografa senha
     const password = generateStrongPassword();
-    data.username = `${data.first_name}.${data.last_name}`.toLowerCase();
+    const username = `${data.first_name}.${data.last_name}`.toLowerCase();
     const hashPassword = await bcrypt.hash(password, 10);
 
     // Cria usuário
-    const newUser = await UserDB.create({ ...data, password: hashPassword });
+    const newUser = await UserDB.create({ ...data, username: username, password: hashPassword });
 
     sendMail(data.email, "Reception Password", `Your password is: ${password}`);
 

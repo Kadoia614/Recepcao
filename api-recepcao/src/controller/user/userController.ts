@@ -12,7 +12,14 @@ export const createUserController = async (
   reply: FastifyReply
 ): Promise<void> => {
   try {
-    const user = request.body;
+    const data = request.body;
+    const user: UserRequired = {
+      first_name: data.first_name,
+      last_name: data.last_name,
+      email: data.email,
+      cpf: data.cpf,
+      role: data.role,
+    }
     const result = await UserService.CreateUser(user);
 
     if (!result.ok) {

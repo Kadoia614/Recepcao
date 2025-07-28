@@ -6,11 +6,14 @@ export interface UserParams {
 export interface UserRequired {
   first_name: string;
   last_name: string;
-  username: string;
   role: "admin" | "user" | "recepcionist" | "superadmin";
   email: string;
-  password: string;
   cpf: string;
+}
+
+export interface UserAuto {
+  password: string;
+  username: string;
 }
 
 export interface UserOptional extends UserParams {
@@ -20,7 +23,7 @@ export interface UserOptional extends UserParams {
   deletedAt: Date | null;
 }
 
-export interface UserAtributes extends UserRequired, UserOptional {}
+export interface UserAtributes extends UserRequired, UserOptional, UserAuto {}
 
 
 // response to methodes
