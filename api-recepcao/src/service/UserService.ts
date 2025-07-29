@@ -75,7 +75,11 @@ export class UserService {
     const hashPassword = await bcrypt.hash(password, 10);
 
     // Cria usuário
-    const newUser = await UserDB.create({ ...data, username: username, password: hashPassword });
+    const newUser = await UserDB.create({
+      ...data,
+      username: username,
+      password: hashPassword,
+    });
 
     sendMail(data.email, "Reception Password", `Your password is: ${password}`);
 
@@ -91,56 +95,48 @@ export class UserService {
     id: string,
     data: UserRequired
   ): Promise<UserGenericResponse> {
-    try {
-      const user = await UserDB.findByPk(id);
+    const user = await UserDB.findByPk(id);
 
-      if (!user) {
-        return {
-          ok: false,
-          code: 404,
-          message: "Usuário não encontrado",
-        };
-      }
-
-      if (!isValidRole(data.role)) {
-        return {
-          ok: false,
-          code: 400,
-          message:
-            "O campo 'role' deve ser 'admin', 'user', 'recepcionist' ou 'superadmin'",
-        };
-      }
-
-      if (await isDuplicateUser(data.email, null, id)) {
-        return {
-          ok: false,
-          code: 403,
-          message: "Usuário Já existe",
-        };
-      }
-
-      // Atualiza campos
-      user.first_name = data.first_name;
-      user.last_name = data.last_name;
-      user.username = `${data.first_name}.${data.last_name}`.toLowerCase();
-      user.email = data.email;
-      user.role = data.role;
-
-      await user.save();
-
-      return {
-        ok: true,
-        code: 200,
-        message: "Alterado com sucesso",
-        user: user,
-      };
-    } catch (error: any) {
+    if (!user) {
       return {
         ok: false,
-        code: error.status || 500,
-        message: error.message || "Erro ao buscar usuários",
+        code: 404,
+        message: "Usuário não encontrado",
       };
     }
+
+    if (!isValidRole(data.role)) {
+      return {
+        ok: false,
+        code: 400,
+        message:
+          "O campo 'role' deve ser 'admin', 'user', 'recepcionist' ou 'superadmin'",
+      };
+    }
+
+    if (await isDuplicateUser(data.email, null, id)) {
+      return {
+        ok: false,
+        code: 403,
+        message: "Usuário Já existe",
+      };
+    }
+
+    // Atualiza campos
+    user.first_name = data.first_name;
+    user.last_name = data.last_name;
+    user.username = `${data.first_name}.${data.last_name}`.toLowerCase();
+    user.email = data.email;
+    user.role = data.role;
+
+    await user.save();
+
+    return {
+      ok: true,
+      code: 200,
+      message: "Alterado com sucesso",
+      user: user,
+    };
   }
 
   static async listUsers(

@@ -1,4 +1,5 @@
 import nodemailer from "nodemailer";
+import { SECRET_EMAIL, SECRET_PASSWORD } from "../config/env.js";
 
 export async function sendMail(to: string, subject: string, text: string) {
   const transporter = nodemailer.createTransport({
@@ -6,8 +7,8 @@ export async function sendMail(to: string, subject: string, text: string) {
     port: 25,
     secure: false, // true para porta 465
     auth: {
-      user: "miguel.moraes@itapecerica.sp.gov.br",
-      pass: "Smile@614", // não é sua senha normal
+      user: SECRET_EMAIL,
+      pass: SECRET_PASSWORD,
     },
   });
 

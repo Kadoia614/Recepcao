@@ -19,7 +19,7 @@ export const createUserController = async (
       email: data.email,
       cpf: data.cpf,
       role: data.role,
-    }
+    };
     const result = await UserService.CreateUser(user);
 
     if (!result.ok) {
@@ -73,9 +73,17 @@ export const updateUserController = async (
     const data = request.body;
     const { uuid } = request.params;
 
-    const result = await UserService.alterUser(uuid, data);
+    const user: UserRequired = {
+      first_name: data.first_name,
+      last_name: data.last_name,
+      email: data.email,
+      cpf: data.cpf,
+      role: data.role,
+    };
 
-   if (!result.ok) {
+    const result = await UserService.alterUser(uuid, user);
+
+    if (!result.ok) {
       throw { ok: false, code: result.code, message: result.message };
     }
 

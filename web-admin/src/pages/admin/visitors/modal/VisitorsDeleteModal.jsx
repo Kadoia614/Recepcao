@@ -1,10 +1,8 @@
 import { Dialog } from "primereact/dialog";
 import { Button } from "primereact/button";
-import { deleteUser } from "@Service/User";
+import { deleteVisitor } from "@Service/Visitor";
 
-import { useUsers } from "@Context/users/UsersContext";
 import { useVisitors } from "@Context/visitors/VisitorsContext";
-
 import { useToast } from "@Context/toast/ToastContext";
 
 const VisitorsDeleteModal = ({ visible, onHide }) => {
@@ -15,7 +13,7 @@ const VisitorsDeleteModal = ({ visible, onHide }) => {
   // Submissão do formulário
   const onConfirm = async () => {
     try {
-      const { message } = await deleteUser(userTarget.uuid);
+      const { message } = await deleteVisitor(visitorTarget.uuid);
       // Remove user from context
       removeVisitor(visitorTarget.uuid);
       showToast("success", "Sucesso", message || "Deleted successfully");
@@ -47,7 +45,7 @@ const VisitorsDeleteModal = ({ visible, onHide }) => {
     >
       <div className="mb-4">
         <p>
-          Are you sure you want to delete the Visitor? <b>{visitorTarget?.name}</b>
+          Are you sure you want to delete the Visitor <b>{visitorTarget?.name}</b>
           ?
         </p>
       </div>

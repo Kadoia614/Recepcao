@@ -19,7 +19,7 @@ const rolesOption = [
 const UserModal = ({ visible, onHide }) => {
   const { showToast } = useToast();
   const { addUsers, userTarget, setUserTarget, updateUsers } = useUsers();
-
+  
   const {
     register,
     control,

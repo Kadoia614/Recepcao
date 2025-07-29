@@ -2,14 +2,23 @@ import { Dialog } from "primereact/dialog";
 import { InputText } from "primereact/inputtext";
 import { InputMask } from "primereact/inputmask";
 import { Button } from "primereact/button";
+import { FileUpload } from "primereact/fileupload";
+import { Divider } from "primereact/divider";
+
 import { useForm, Controller } from "react-hook-form";
+import { useEffect, useState } from "react";
+
 import { useToast } from "@Context/toast/ToastContext";
 import { useVisitors } from "@Context/visitors/VisitorsContext";
-import { useEffect } from "react";
 
 import { postVisitor, putVisitor } from "@Service/Visitor";
+import { Tooltip } from "primereact/tooltip";
+import UploadFile from "./UploadFile";
 
 const VisitorsModal = ({ visible, onHide }) => {
+  const [CEP, setCEP] = useState("");
+  const [photoBase64, setPhotoBase64] = useState(null);
+
   const { showToast } = useToast();
   const { addVisitors, visitorTarget, setVisitorTarget, updateVisitor } =
     useVisitors();
@@ -20,10 +29,12 @@ const VisitorsModal = ({ visible, onHide }) => {
     handleSubmit,
     formState: { errors },
     reset,
+    setValue,
   } = useForm({
     defaultValues: {
       uuid: null,
       name: "",
+      cpf: "",
       photo: "",
       email: "",
       phone: "",
@@ -35,6 +46,7 @@ const VisitorsModal = ({ visible, onHide }) => {
     mode: "onBlur",
   });
 
+  // Preenche formulário em caso de edição
   useEffect(() => {
     if (visitorTarget) {
       reset({
@@ -44,46 +56,57 @@ const VisitorsModal = ({ visible, onHide }) => {
         waring: visitorTarget.waring || "secure",
         cpf: visitorTarget.cpf || "",
         email: visitorTarget.email || "",
-        phone:  visitorTarget.phone || "",
+        phone: visitorTarget.phone || "",
         address: visitorTarget.address || "",
         city: visitorTarget.city || "",
         state: visitorTarget.state || "",
         zipCode: visitorTarget.zipCode || "",
       });
     } else {
-      reset({
-        uuid: null,
-        name: "",
-        cpf: "",
-        photo: "",
-        email: "",
-        phone: "",
-        address: "",
-        city: "",
-        state: "",
-        zipCode: "",
-      });
+      reset();
     }
   }, [visitorTarget, reset]);
+
+  // Autopreenche endereço via ViaCEP
+  useEffect(() => {
+    if (CEP.length === 8) {
+      fetch(`https://viacep.com.br/ws/${CEP}/json/`)
+        .then((res) => res.json())
+        .then((data) => {
+          if (!data.erro) {
+            setValue("address", data.logradouro || "");
+            setValue("city", data.localidade || "");
+            setValue("state", data.uf || "");
+            setValue("zipCode", data.cep || "");
+          } else {
+            showToast("error", "Erro", "CEP não encontrado");
+          }
+        })
+        .catch((err) => {
+          showToast("error", "Erro", "Erro ao buscar CEP: " + err.message);
+        });
+    }
+  }, [CEP, setValue]);
+
+  useEffect(()=>{
+    setValue("photo", photoBase64 || "")
+    alert(photoBase64)
+  }, [photoBase64])
 
   const onSubmit = async (data) => {
     try {
       if (visitorTarget) {
         const { message, visitor } = await putVisitor(data, data.uuid);
         updateVisitor(visitor);
-        showToast("success", "Sucesso", message || "Atualizado com sucesso");
+        showToast("success", "Sucesso", message || "Visitante atualizado");
       } else {
         const { visitor, message } = await postVisitor(data);
         addVisitors(visitor);
-        showToast("success", "Sucesso", message || "Criado com sucesso");
+        showToast("success", "Sucesso", message || "Visitante criado");
       }
       handleClose();
-    } catch (error) {
-      showToast(
-        "error",
-        "Erro",
-        error.response?.data?.message || error.message
-      );
+    } catch (err) {
+      showToast("error", "Erro", err.response?.data?.message || err.message);
     }
   };
 
@@ -97,14 +120,23 @@ const VisitorsModal = ({ visible, onHide }) => {
     <Dialog
       header={visitorTarget ? "Editar Visitante" : "Cadastro de Visitante"}
       visible={visible}
-      style={{ width: "30rem" }}
       onHide={handleClose}
       modal
-      className="p-fluid"
+      className="p-fluid w-3xl"
     >
-      <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4">
+      <form
+        onSubmit={handleSubmit(onSubmit)}
+        className="flex flex-row flex-wrap sm:gap-4 gap-2"
+      >
+        {/* Upload de Foto */}
+        <div className="w-full sm:w-[50%] m-auto">
+          <label className="font-medium">Foto</label>
+  
+          <UploadFile setPhotoBase64={setPhotoBase64} />
+        </div>
+
         {/* Nome */}
-        <div>
+        <div className="md:w-[57%] sm:w-[48.5%] w-full">
           <label className="font-medium">Nome</label>
           <InputText
             {...register("name", { required: "Obrigatório" })}
@@ -116,7 +148,7 @@ const VisitorsModal = ({ visible, onHide }) => {
         </div>
 
         {/* CPF */}
-        <div>
+        <div className="md:w-[40%] sm:w-[48.5%] w-full">
           <label className="font-medium">CPF</label>
           <Controller
             name="cpf"
@@ -126,7 +158,6 @@ const VisitorsModal = ({ visible, onHide }) => {
                 {...field}
                 mask="999.999.999-99"
                 placeholder="***.***.***-**"
-                className={errors.cpf ? "p-invalid" : ""}
                 onChange={(e) => field.onChange(e.target.value)}
                 value={field.value}
                 disabled={!!visitorTarget}
@@ -138,76 +169,62 @@ const VisitorsModal = ({ visible, onHide }) => {
           )}
         </div>
 
-        {/* Foto */}
-        <div>
-          <label className="font-medium">Foto (URL)</label>
-          <InputText {...register("photo")} placeholder="URL da foto" />
-        </div>
-
-        {/* E-mail */}
-        <div>
+        {/* Email */}
+        <div className="md:w-[48.5%] sm:w-[60%] w-full">
           <label className="font-medium">E-mail</label>
-          <InputText
-            type="email"
-            {...register("email")}
-            placeholder={"E-mail"}
-          />
+          <InputText type="email" {...register("email")} />
         </div>
 
         {/* Telefone */}
-        <div>
+        <div className="md:w-[48.5%] sm:w-[37%] w-full">
           <label className="font-medium">Telefone</label>
+          <InputText {...register("phone")} />
+        </div>
+
+        <Divider />
+
+        {/* CEP */}
+        <div className="sm:w-[30%] w-[80%]">
+          <label className="font-medium">CEP</label>
           <InputText
-            {...register("phone")}
-            placeholder={"Telefone"}
+            onChange={(e) => setCEP(e.target.value)}
+            maxLength={8}
+            placeholder="CEP"
           />
         </div>
 
         {/* Endereço */}
-        <div>
+        <div className="sm:w-[67%] w-full">
           <label className="font-medium">Endereço</label>
-          <InputText
-            {...register("address")}
-            placeholder={"Endereço"}
-          />
+          <InputText {...register("address")} disabled />
         </div>
 
         {/* Cidade */}
-        <div>
+        <div className="sm:w-[48.5%] w-full">
           <label className="font-medium">Cidade</label>
-          <InputText
-            {...register("city")}
-            placeholder={"Cidade"}
-          />
+          <InputText {...register("city")} disabled />
         </div>
 
         {/* Estado */}
-        <div>
+        <div className="sm:w-[48.5%] w-full">
           <label className="font-medium">Estado</label>
-          <InputText
-            {...register("state")}
-            placeholder={"Estado"}
-          />
-        </div>
-
-        {/* CEP */}
-        <div>
-          <label className="font-medium">CEP</label>
-          <InputText  
-            {...register("zipCode")}
-            placeholder={"CEP"}
-          />
+          <InputText {...register("state")} disabled />
         </div>
 
         {/* Botões */}
-        <div className="flex justify-end gap-2 mt-4">
+        <div className="flex justify-end gap-2 mt-4 w-full">
           <Button
+            type="button"
             label="Cancelar"
             severity="secondary"
+            className="w-[50%]"
             onClick={handleClose}
-            type="button"
           />
-          <Button label="Salvar" className="btn-primary" type="submit" />
+          <Button
+            type="submit"
+            label="Salvar"
+            className="btn-primary w-[50%]"
+          />
         </div>
       </form>
     </Dialog>

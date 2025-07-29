@@ -2,6 +2,7 @@ import { FastifyInstance } from "fastify";
 import {
   createVisitorController,
   getVisitorsController,
+  deleteVisitorController
 } from "../controller/visitors/visitorsController.js";
 
 const visitorParams = {
@@ -105,5 +106,30 @@ export async function visitorRouter(app: FastifyInstance) {
       },
     },
     handler: createVisitorController,
+  });
+
+  app.route({
+    method: "DELETE",
+    url: "/:uuid",
+    schema: {
+      tags: ["Visitor"],
+      description: "Delete a Visitor",
+      summary: "Delete Visitor",
+      response: {
+        200: {
+          type: "object",
+          properties: {
+            message: { type: "string" },
+          },
+        },
+        500: {
+          type: "object",
+          properties: {
+            message: { type: "string" },
+          },
+        },
+      },
+    },
+    handler: deleteVisitorController,
   });
 }

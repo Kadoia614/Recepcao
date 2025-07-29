@@ -41,11 +41,12 @@ export type GetVisitorssResponse = getVisitorsSucess | getVisitorsFail;
 interface VisitorsSuccessful {
   ok: true;
   message: string;
-  visitor: VisitorsAtributes;
+  visitor?: VisitorsAtributes;
 }
 
 interface VisitorsFail {
   ok: false;
+  error?: any
   code: number;
   message: string;
 }

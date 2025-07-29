@@ -31,3 +31,10 @@ export const putVisitor = async (visitor, uuid) => {
 
   return data;
 }
+
+export const deleteVisitor = async (uuid) => {
+  const { data } = await API.delete(`/visitors/${uuid}`, {
+    headers: { Authorization: localStorage.getItem("token") },
+    });
+    return data;
+}
