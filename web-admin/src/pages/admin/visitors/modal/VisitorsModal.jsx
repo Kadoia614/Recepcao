@@ -43,7 +43,6 @@ const VisitorsModal = ({ visible, onHide }) => {
       state: "",
       zipCode: "",
     },
-    mode: "onBlur",
   });
 
   // Preenche formulário em caso de edição
@@ -88,10 +87,9 @@ const VisitorsModal = ({ visible, onHide }) => {
     }
   }, [CEP, setValue]);
 
-  useEffect(()=>{
-    setValue("photo", photoBase64 || "")
-    alert(photoBase64)
-  }, [photoBase64])
+  useEffect(() => {
+    setValue("photo", photoBase64 || "");
+  }, [photoBase64]);
 
   const onSubmit = async (data) => {
     try {
@@ -112,7 +110,20 @@ const VisitorsModal = ({ visible, onHide }) => {
 
   const handleClose = () => {
     setVisitorTarget(null);
-    reset();
+    reset({
+      defaultValues: {
+        uuid: null,
+        name: "",
+        cpf: "",
+        photo: "",
+        email: "",
+        phone: "",
+        address: "",
+        city: "",
+        state: "",
+        zipCode: "",
+      },
+    });
     onHide();
   };
 
@@ -131,8 +142,11 @@ const VisitorsModal = ({ visible, onHide }) => {
         {/* Upload de Foto */}
         <div className="w-full sm:w-[50%] m-auto">
           <label className="font-medium">Foto</label>
-  
-          <UploadFile setPhotoBase64={setPhotoBase64} />
+
+          <UploadFile
+            setPhotoBase64={setPhotoBase64}
+            photoBase64={photoBase64}
+          />
         </div>
 
         {/* Nome */}

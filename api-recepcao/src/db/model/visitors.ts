@@ -45,7 +45,7 @@ Visitors.init(
       allowNull: false,
     },
     photo: {
-      type: DataTypes.STRING,
+      type: DataTypes.TEXT("medium"),
       allowNull: true,
     },
     email: {

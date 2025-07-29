@@ -3,7 +3,7 @@ import { FileUpload } from "primereact/fileupload";
 import { ProgressBar } from "primereact/progressbar";
 import { Tag } from "primereact/tag";
 
-export default function UploadFile({ setPhotoBase64 }) {
+export default function UploadFile({ setPhotoBase64, photoBase64 }) {
   const [totalSize, setTotalSize] = useState(0);
   const fileUploadRef = useRef(null);
 
@@ -39,7 +39,7 @@ export default function UploadFile({ setPhotoBase64 }) {
 
   const headerTemplate = (options) => {
     const { className, chooseButton, uploadButton, cancelButton } = options;
-    const value = totalSize / 10000;
+    const value = totalSize / 50000;
     const formatedValue =
       fileUploadRef && fileUploadRef.current
         ? fileUploadRef.current.formatSize(totalSize)
@@ -51,7 +51,7 @@ export default function UploadFile({ setPhotoBase64 }) {
         {/* {uploadButton} */}
         {cancelButton}
         <div className="flex flex-col align-items-center gap-3 ml-auto">
-          <span>{formatedValue} / 1 MB</span>
+          <span>{formatedValue} / 5 MB</span>
           <ProgressBar
             value={value}
             showValue={false}
@@ -86,10 +86,14 @@ export default function UploadFile({ setPhotoBase64 }) {
 
   const emptyTemplate = () => {
     return (
-      <div className="flex align-items-center h-50 relative">
-        <p className="z-10 text-center w-full mt-5">Drag and Drop Image Here</p>
-        <div className="flex justify-center items-center absolute h-full w-full bg-gray-100">
-          <i className="pi pi-image mt-3 p-5 bg-gray-100 text-7xl"></i>
+      <div className="flex flex-col align-items-center h-50 relative">
+        <p className="z-10 text-center w-full mb-5">Drag and Drop Image Here</p>
+        <div className="flex justify-center items-center  h-full w-full bg-gray-100">
+          {photoBase64 ? (
+            <img src={photoBase64} alt="Visitor Image"></img>
+          ) : (
+            <i className="pi pi-image mt-3 p-5 bg-gray-100 text-7xl"></i>
+          )}
         </div>
       </div>
     );
@@ -122,7 +126,7 @@ export default function UploadFile({ setPhotoBase64 }) {
         ref={fileUploadRef}
         name="uploadVisitor"
         accept="image/*"
-        maxFileSize={1000000}
+        maxFileSize={5120000}
         // functions
         onUpload={onTemplateUpload}
         onSelect={onTemplateSelect}
