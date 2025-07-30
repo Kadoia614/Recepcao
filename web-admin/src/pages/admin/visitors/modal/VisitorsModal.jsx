@@ -68,8 +68,10 @@ const VisitorsModal = ({ visible, onHide }) => {
 
   // Autopreenche endereço via ViaCEP
   useEffect(() => {
-    if (CEP.length === 8) {
-      fetch(`https://viacep.com.br/ws/${CEP}/json/`)
+    const cep = CEP.replace(/\D/g, "");
+
+    if (cep.length === 8) {
+      fetch(`https://viacep.com.br/ws/${cep}/json/`)
         .then((res) => res.json())
         .then((data) => {
           if (!data.erro) {
@@ -142,10 +144,10 @@ const VisitorsModal = ({ visible, onHide }) => {
         {/* Upload de Foto */}
         <div className="w-full sm:w-[50%] m-auto">
           <label className="font-medium">Foto</label>
-
+          {console.log(visitorTarget)}
           <UploadFile
             setPhotoBase64={setPhotoBase64}
-            photoBase64={photoBase64}
+            photo={visitorTarget?.photo}
           />
         </div>
 
@@ -200,10 +202,21 @@ const VisitorsModal = ({ visible, onHide }) => {
         {/* CEP */}
         <div className="sm:w-[30%] w-[80%]">
           <label className="font-medium">CEP</label>
-          <InputText
-            onChange={(e) => setCEP(e.target.value)}
-            maxLength={8}
-            placeholder="CEP"
+          <Controller
+            name="zipCode"
+            control={control}
+            render={({ field }) => (
+              <InputMask
+                onChange={(e) => {
+                  console.log(e);
+                  setCEP(e.target.value);
+                }}
+                mask="99999-999"
+                maxLength={9}
+                value={field.value}
+                placeholder="CEP"
+              />
+            )}
           />
         </div>
 

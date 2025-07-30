@@ -18,6 +18,7 @@ export const createUserController = async (
       last_name: data.last_name,
       email: data.email,
       cpf: data.cpf,
+      // password: data.password,
       role: data.role,
     };
     const result = await UserService.CreateUser(user);

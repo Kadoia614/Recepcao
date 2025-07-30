@@ -1,23 +1,15 @@
-import { DataTable } from "primereact/datatable";
-import { Column } from "primereact/column";
-import { Paginator } from "primereact/paginator";
-import { useState, useEffect } from "react";
+import { DataView } from "primereact/dataview";
 import { Button } from "primereact/button";
 import { InputText } from "primereact/inputtext";
-import { Tag } from "primereact/tag";
-
-import TableHeader from "@/components/table/TableHeader";
+import { Paginator } from "primereact/paginator";
 import { useToast } from "@Context/toast/ToastContext";
 import { useVisitors } from "@Context/visitors/VisitorsContext";
-
+import TableHeader from "@/components/table/TableHeader";
+import { useEffect, useState } from "react";
+import { Tag } from "primereact/tag";
 import { getVisitor } from "@Service/Visitor";
-const columns = [
-  { field: "name", header: "Name" },
-  { field: "waring", header: "Waring" },
-  { field: "createdAt", header: "Created At" },
-];
 
-const VisitorsTable = ({ setEditIsVisible, setExcludeIsVisible }) => {
+const VisitorsView = ({ setEditIsVisible, setExcludeIsVisible }) => {
   const {
     visitors,
     setVisitors,
@@ -27,6 +19,7 @@ const VisitorsTable = ({ setEditIsVisible, setExcludeIsVisible }) => {
   } = useVisitors();
 
   const { showToast } = useToast();
+
   const [query, setQuery] = useState({
     page: 0,
     limit: 10,
@@ -43,7 +36,7 @@ const VisitorsTable = ({ setEditIsVisible, setExcludeIsVisible }) => {
       setTotalVisitor(count);
       setVisitors(visitor);
     } catch (error) {
-      showToast("error", "error", error.response.data.message);
+      showToast("error", "Erro", error.response?.data?.message || "Erro geral");
     }
   };
 
@@ -51,7 +44,7 @@ const VisitorsTable = ({ setEditIsVisible, setExcludeIsVisible }) => {
     fetchData();
   }, [query]);
 
-  const ActionsFields = (data) => {
+  const itemTemplate = (data) => {
     const toEdit = () => {
       setVisitorTarget(data);
       setEditIsVisible(true);
@@ -62,37 +55,48 @@ const VisitorsTable = ({ setEditIsVisible, setExcludeIsVisible }) => {
       setExcludeIsVisible(true);
     };
 
+    const WarringField = (data) => {
+      switch (data.warring) {
+        case "secure":
+          return <Tag value={data.status} severity={"success"} />;
+        case "warning":
+          return <Tag value={data.status} severity={"warning"} />;
+        case "danger":
+          return <Tag value={data.status} severity={"danger"} />;
+        default:
+          return <Tag value={"unknow"} severity={"info"} />;
+      }
+    };
+
     return (
-      <div className="flex items-center gap-2">
-        <Button
-          icon="pi pi-pencil"
-          className="p-button-rounded p-button-text"
-          onClick={() => {
-            toEdit();
-          }}
+      <div className="flex items-center p-4 border border-gray-200 rounded-lg shadow-sm gap-4">
+        <img
+          src={data.photo ? `${data.photo}` : "/placeholder.png"}
+          alt="visitor"
+          className="w-20 h-24 rounded-md object-cover"
         />
-        <Button
-          icon="pi pi-trash"
-          className="p-button-rounded p-button-text p-button-danger"
-          onClick={() => {
-            toExclude();
-          }}
-        />
+        <div className="flex-1">
+          <h4 className="font-semibold text-lg">{data.name} <span className="ml-3">{WarringField(data)}</span></h4>
+          <p className="text-sm text-gray-600">{data.email}</p>
+          <p className="text-sm text-gray-600">{data.phone}</p>
+          <p className="text-xs text-gray-400">
+            Criado em: {new Date(data.createdAt).toLocaleDateString("pt-BR")}
+          </p>
+        </div>
+        <div className="flex gap-2">
+          <Button
+            icon="pi pi-pencil"
+            className="p-button-rounded p-button-text"
+            onClick={toEdit}
+          />
+          <Button
+            icon="pi pi-trash"
+            className="p-button-rounded p-button-text p-button-danger"
+            onClick={toExclude}
+          />
+        </div>
       </div>
     );
-  };
-
-  const WarringField = (data) => {
-    switch (data.warring) {
-      case "secure":
-        return <Tag value={data.status} severity={"success"} />;
-      case "warning":
-        return <Tag value={data.status} severity={"warning"} />;
-      case "danger":
-        return <Tag value={data.status} severity={"danger"} />;
-      default:
-        return <Tag value={"unknow"} severity={"info"} />;
-    }
   };
 
   return (
@@ -115,48 +119,48 @@ const VisitorsTable = ({ setEditIsVisible, setExcludeIsVisible }) => {
           <i className="pi pi-search" />
         </span>
       </div>
+
       <TableHeader
         end={
           <div className="md:flex items-center gap-2">
             <Button
-              label="New user"
+              label="Novo visitante"
               icon="pi pi-user-plus"
               className="btn-primary"
               onClick={() => setEditIsVisible(true)}
             />
           </div>
         }
-        center={<h2 className="text-2xl font-bold">Users</h2>}
+        center={<h2 className="text-2xl font-bold">Visitantes</h2>}
         start={
           <div className="flex items-center gap-4">
-            <span>Total Visitors: {totalVisitor}</span>
+            <span>Total de Visitantes: {totalVisitor}</span>
           </div>
         }
-      ></TableHeader>
-      <DataTable value={visitors} size="medium" stripedRows>
-        {columns.map((col, index) => {
-          if (col.field === "waring") {
-            return <Column key={index} body={WarringField} header="Warring" />;
-          }
-          return <Column key={index} field={col.field} header={col.header} />;
-        })}
-        <Column body={ActionsFields} header="Actions" />
-      </DataTable>
+      />
+
+      <DataView
+        value={visitors}
+        itemTemplate={itemTemplate}
+        layout="list"
+        paginator={false}
+      />
+
       <Paginator
         first={query.page}
         rows={query.limit}
         totalRecords={totalVisitor}
-        rowsPerPageOptions={[1, 10, 20, 30]}
-        onPageChange={(e) =>{
+        rowsPerPageOptions={[10, 20, 30]}
+        onPageChange={(e) =>
           setQuery((prev) => ({
             ...prev,
             page: e.page,
             limit: e.rows,
-          }))}
+          }))
         }
       />
     </section>
   );
 };
 
-export default VisitorsTable;
+export default VisitorsView;

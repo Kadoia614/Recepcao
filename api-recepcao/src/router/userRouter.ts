@@ -6,6 +6,9 @@ import {
   updateUserController,
 } from "../controller/user/userController.js";
 
+import { authJWT } from "../middleware/authJWT.js";
+import { checkPermissions } from "../middleware/checkPermissions.js";
+
 const userSchema = {
   type: "object",
   required: ["first_name", "last_name", "role", "email", "cpf"],
@@ -31,7 +34,6 @@ const userUpdateSchema = {
   additionalProperties: false,
 };
 
-
 const responseUserSchema = {
   type: "object",
   properties: {
@@ -45,6 +47,9 @@ const responseUserSchema = {
 };
 
 export async function userRouter(app: FastifyInstance) {
+  app.addHook("preHandler", authJWT);
+  app.addHook("preHandler", checkPermissions);
+  
   app.route({
     method: "POST",
     url: "/",

@@ -5,6 +5,7 @@ import {
   GetVisitorssResponse,
   VisitorsGenericResponse,
   VisitorsRequired,
+  VisitorsParams,
 } from "../types/visitorTypes.js";
 
 export class VisitorsService {
@@ -94,7 +95,7 @@ export class VisitorsService {
     uuid: string,
     visitorData: VisitorsRequired
   ): Promise<VisitorsGenericResponse> {
-    const updatedVisitor = await Visitors.findOne({ where: { uuid } });
+    const updatedVisitor = await Visitors.findByPk(uuid);
 
     if (!updatedVisitor) {
       return {

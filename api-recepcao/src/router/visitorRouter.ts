@@ -2,8 +2,12 @@ import { FastifyInstance } from "fastify";
 import {
   createVisitorController,
   getVisitorsController,
-  deleteVisitorController
+  deleteVisitorController,
+  updateVisitorController,
 } from "../controller/visitors/visitorsController.js";
+
+import { authJWT } from "../middleware/authJWT.js";
+import { checkPermissions } from "../middleware/checkPermissions.js";
 
 const visitorParams = {
   type: "object",
@@ -28,6 +32,11 @@ const visitorResponse = {
     uuid: { type: "string", example: "123e4567-e89b-12d3-a456-426614174000" },
     name: { type: "string", example: "João da Silva" },
 
+    photo: {
+      type: "string",
+      nullable: true,
+      example: "https://example.com/photo.jpg",
+    },
     email: { type: "string", nullable: true, example: "kadoia@gmail.com" },
     phone: { type: "string", nullable: true, example: "11987654321" },
     address: { type: "string", nullable: true, example: "Rua Exemplo, 123" },
@@ -50,6 +59,9 @@ const visitorResponse = {
 };
 
 export async function visitorRouter(app: FastifyInstance) {
+  app.addHook("preHandler", authJWT);
+  app.addHook("preHandler", checkPermissions);
+
   app.route({
     method: "GET",
     url: "/",
@@ -131,5 +143,31 @@ export async function visitorRouter(app: FastifyInstance) {
       },
     },
     handler: deleteVisitorController,
+  });
+
+  app.route({
+    method: "PUT",
+    url: "/:uuid",
+    schema: {
+      tags: ["Visitor"],
+      description: "Update a Visitor",
+      summary: "Update Visitor",
+      body: visitorParams,
+      response: {
+        200: {
+          type: "object",
+          properties: {
+            message: { type: "string" },
+          },
+        },
+        500: {
+          type: "object",
+          properties: {
+            message: { type: "string" },
+          },
+        },
+      },
+    },
+    handler: updateVisitorController,
   });
 }

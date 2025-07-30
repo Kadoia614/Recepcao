@@ -71,6 +71,7 @@ export class UserService {
 
     // Define username e criptografa senha
     const password = generateStrongPassword();
+    // const password = data.password;
     const username = `${data.first_name}.${data.last_name}`.toLowerCase();
     const hashPassword = await bcrypt.hash(password, 10);
 
@@ -81,7 +82,7 @@ export class UserService {
       password: hashPassword,
     });
 
-    sendMail(data.email, "Reception Password", `Your password is: ${password}`);
+    await sendMail(data.email, "Reception Password", `Your password is: ${password}`);
 
     return {
       ok: true,

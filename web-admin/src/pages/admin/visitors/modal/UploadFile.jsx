@@ -3,7 +3,7 @@ import { FileUpload } from "primereact/fileupload";
 import { ProgressBar } from "primereact/progressbar";
 import { Tag } from "primereact/tag";
 
-export default function UploadFile({ setPhotoBase64, photoBase64 }) {
+export default function UploadFile({ setPhotoBase64, photo }) {
   const [totalSize, setTotalSize] = useState(0);
   const fileUploadRef = useRef(null);
 
@@ -65,12 +65,14 @@ export default function UploadFile({ setPhotoBase64, photoBase64 }) {
   const itemTemplate = (file, props) => {
     return (
       <div className="flex flex-col align-items-center flex-wrap">
+        <div className="h-50 overflow-hidden mb-5">
         <img
           alt={file.name}
           role="presentation"
           src={file.objectURL}
-          className="w-full"
+          className="w-full object-cover h-full"
         />
+        </div>
         <span className="flex flex-column text-left ml-3">
           {file.name}
           <small>{new Date().toLocaleDateString()}</small>
@@ -88,9 +90,9 @@ export default function UploadFile({ setPhotoBase64, photoBase64 }) {
     return (
       <div className="flex flex-col align-items-center h-50 relative">
         <p className="z-10 text-center w-full mb-5">Drag and Drop Image Here</p>
-        <div className="flex justify-center items-center  h-full w-full bg-gray-100">
-          {photoBase64 ? (
-            <img src={photoBase64} alt="Visitor Image"></img>
+        <div className="flex justify-center items-center w-full bg-gray-100 overflow-hidden">
+          {photo ? (
+            <img src={photo} alt="Visitor Image" className="object-cover w-full"></img>
           ) : (
             <i className="pi pi-image mt-3 p-5 bg-gray-100 text-7xl"></i>
           )}

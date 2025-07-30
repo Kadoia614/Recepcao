@@ -53,8 +53,8 @@ export const createVisitorController = async (
       address: data.address,
       city: data.city,
       state: data.state,
-      zipCode: data.zipCode,      
-    } 
+      zipCode: data.zipCode,
+    };
     const result = await VisitorsService.createVisitor(visitorData);
 
     if (!result.ok) {
@@ -94,6 +94,44 @@ export const deleteVisitorController = async (
       error: error,
       code: error.code || 500,
       message: error.message || "Impossível deletar visitante",
+    };
+  }
+};
+
+export const updateVisitorController = async (
+  request: FastifyRequest<{ Body: VisitorsRequired, Params: { uuid: string } }>,
+  reply: FastifyReply
+): Promise<void> => {
+  try {
+    const visitorId = request.params.uuid;
+    const data = request.body;
+    const visitorData = {
+      name: data.name,
+      cpf: data.cpf,
+      photo: data.photo,
+      email: data.email,
+      phone: data.phone,
+      address: data.address,
+      city: data.city,
+      state: data.state,
+      zipCode: data.zipCode,
+    };
+    const result = await VisitorsService.updateVisitor(visitorId, visitorData);
+
+    if (!result.ok) {
+      throw { ok: false, code: result.code, message: result.message };
+    }
+    console.log(result);
+    reply.status(201).send({
+      message: result.message,
+      visitor: result.visitor,
+    });
+  } catch (error: any) {
+    throw {
+      ok: error.ok || false,
+      error: error || "No application error",
+      code: error.code || 500,
+      message: error.message || "Impossível criar visitante",
     };
   }
 };

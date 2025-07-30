@@ -27,6 +27,8 @@ export class Auth {
       { expiresIn: "1h" }
     );
 
+    const tokenResult = `Bearer ${token}`;
+
     return {
       ok: true,
       user: {
@@ -35,7 +37,7 @@ export class Auth {
         role: user.role,
         firstLogin: user.firstLogin,
       },
-      token,
+      token: tokenResult,
     };
   }
 }

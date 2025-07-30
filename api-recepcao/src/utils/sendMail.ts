@@ -2,6 +2,7 @@ import nodemailer from "nodemailer";
 import { SECRET_EMAIL, SECRET_PASSWORD } from "../config/env.js";
 
 export async function sendMail(to: string, subject: string, text: string) {
+
   const transporter = nodemailer.createTransport({
     host: "mail.itapecerica.sp.gov.br", // servidor de email
     port: 25,
