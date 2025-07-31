@@ -41,7 +41,7 @@ app.setErrorHandler((error, request, reply) => {
     message: error.message || "Internal Server Error",
   };
 
-  reply.status(response.code).send({message: response.message});
+  reply.status(response.code).send({message: response.message, ok: false});
 
   // Log the error details for debugging
   console.error("Error occurred:", error);

@@ -1,5 +1,6 @@
 import { FastifyInstance } from "fastify";
 import { loginController } from "../controller/auth/loginController.js";
+import { ValidateTokenController } from "../controller/auth/validateTokenController.js";
 
 export async function loginRouter(app: FastifyInstance) {
   app.route({
@@ -43,5 +44,37 @@ export async function loginRouter(app: FastifyInstance) {
       },
     },
     handler: loginController,
+  });
+
+  app.route({
+    method: "POST",
+    url: "/verify",
+    schema: {
+      tags: ["Login"],
+      summary: "Verify the Token's integrity",
+      description: "Route to verify a token integrity",
+      body: { type: "object", properties: { token: { type: "string" } }, required: ["token"] },
+      response: {
+        200: {
+          properties: {
+            message: { type: "string", example: "Token validate Confirm" },
+            ok: { type: "boolean", example: true}
+          },
+        },
+        401: {
+          properties: {
+            message: { type: "string", example: "Invallid token" },
+            ok: { type: "boolean", example: false}
+          },
+        },
+        500: {
+          properties: {
+            message: { type: "string", example: "Internal Error"},
+            ok: { type: "boolean", example: false}
+          }
+        },
+      },
+    },
+    handler: ValidateTokenController,
   });
 }
