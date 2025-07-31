@@ -5,6 +5,7 @@ import VisitorsDeleteModal from "./modal/VisitorsDeleteModal";
 
 import { VisitorProvider } from "@Context/visitors/VisitorsProvider";
 import { useState } from "react";
+import MyWebcamComponent from "../../../components/file/webcam/TakePictureWebcam";
 
 const Visitors = () => {
   // VisitorsModal

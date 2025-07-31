@@ -1,19 +1,18 @@
+import { useForm, Controller } from "react-hook-form";
+import { useEffect, useState } from "react";
+
+import { postVisitor, putVisitor } from "@Service/Visitor";
+
 import { Dialog } from "primereact/dialog";
 import { InputText } from "primereact/inputtext";
 import { InputMask } from "primereact/inputmask";
 import { Button } from "primereact/button";
-import { FileUpload } from "primereact/fileupload";
 import { Divider } from "primereact/divider";
-
-import { useForm, Controller } from "react-hook-form";
-import { useEffect, useState } from "react";
 
 import { useToast } from "@Context/toast/ToastContext";
 import { useVisitors } from "@Context/visitors/VisitorsContext";
 
-import { postVisitor, putVisitor } from "@Service/Visitor";
-import { Tooltip } from "primereact/tooltip";
-import UploadFile from "./UploadFile";
+import UploadFile from "./uploadFile/UploadFile";
 
 const VisitorsModal = ({ visible, onHide }) => {
   const [CEP, setCEP] = useState("");

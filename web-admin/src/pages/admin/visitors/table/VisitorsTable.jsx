@@ -1,14 +1,17 @@
+import { useEffect, useState } from "react";
+
 import { DataView } from "primereact/dataview";
 import { Button } from "primereact/button";
 import { InputText } from "primereact/inputtext";
 import { Paginator } from "primereact/paginator";
+import { Image } from 'primereact/image';
+import { Tag } from "primereact/tag";
+
 import { useToast } from "@Context/toast/ToastContext";
 import { useVisitors } from "@Context/visitors/VisitorsContext";
-import TableHeader from "@/components/table/TableHeader";
-import { useEffect, useState } from "react";
-import { Tag } from "primereact/tag";
-import { getVisitor } from "@Service/Visitor";
 
+import TableHeader from "@/components/table/TableHeader";
+import { getVisitor } from "@Service/Visitor";
 const VisitorsView = ({ setEditIsVisible, setExcludeIsVisible }) => {
   const {
     visitors,
@@ -70,10 +73,11 @@ const VisitorsView = ({ setEditIsVisible, setExcludeIsVisible }) => {
 
     return (
       <div className="flex items-center p-4 border border-gray-200 rounded-lg shadow-sm gap-4">
-        <img
+        <Image
           src={data.photo ? `${data.photo}` : "/placeholder.png"}
           alt="visitor"
-          className="w-20 h-24 rounded-md object-cover"
+          className="w-20 max-h-24 rounded-md object-cover overflow-hidden"
+          preview
         />
         <div className="flex-1">
           <h4 className="font-semibold text-lg">{data.name} <span className="ml-3">{WarringField(data)}</span></h4>
