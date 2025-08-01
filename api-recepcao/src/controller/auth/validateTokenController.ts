@@ -1,5 +1,6 @@
 import { FastifyReply, FastifyRequest } from "fastify";
 import { decodeToken } from "../../utils/DecodeToken.js";
+import { request } from "http";
 
 interface ValidateRequestBody {
   token: string | undefined;
@@ -27,5 +28,6 @@ export const ValidateTokenController = async (
     error.statusCode = tokenResult.code || 401;
     throw error;
   }
-  reply.status(200).send({message: tokenResult.message, ok: true});
+
+  reply.status(200).send({message: tokenResult.message, name: tokenResult.name, uuid: tokenResult.uuid, role: tokenResult.role, ok: true});
 };

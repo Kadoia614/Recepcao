@@ -92,4 +92,3 @@ Visitors.init(
   }
 );
 
-// console.log(Room === sequelize.models.Room);

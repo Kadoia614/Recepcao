@@ -22,7 +22,7 @@ export class Auth {
     }
 
     const token = jwt.sign(
-      { id: user.uuid, name: user.username, role: user.role },
+      { uuid: user.uuid, name: user.username, role: user.role },
       SECRET_KEY_JWT!,
       { expiresIn: "1h" }
     );

@@ -4,6 +4,7 @@ import { SECRET_KEY_JWT } from "../config/env.js";
 interface TokenResult {
   ok: boolean;
   code?: number;
+  name?: string
   message: string;
   role?: string;
   uuid?: string;
@@ -25,6 +26,7 @@ export async function decodeToken(token: string): Promise<TokenResult> {
       ok: true,
       role: decoded.role,
       uuid: decoded.uuid,
+      name: decoded.name,
       message: "Token is valid",
     };
   } catch (err) {

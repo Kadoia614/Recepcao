@@ -9,6 +9,8 @@ import { Router } from "./router/routes.js";
 import { PORT } from "./config/env.js";
 import { interfaceErrorResponse } from "./types/errorTypes.js";
 
+import "./db/model/association.js"
+
 const app = fastify();
 
 app.register(fastifyCors, { origin: "*" });

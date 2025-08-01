@@ -82,4 +82,3 @@ UserDB.init(
   }
 );
 
-// console.log(UserDB === sequelize.models.User);
