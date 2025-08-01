@@ -136,7 +136,7 @@ const UserModal = ({ visible, onHide }) => {
                 className={errors.role ? "p-invalid" : ""}
                 onChange={(e) => field.onChange(e.value)}
                 value={field.value}
-              />
+              />  
             )}
           />
           {errors.role && (

@@ -26,7 +26,7 @@ const TableHeader = ({start, center, end}) => {
 
   return (
     <div className="relative header-table">
-      <Toolbar start={startContent} center={centerContent} end={endContent} />
+      <Toolbar start={startContent} center={centerContent} end={endContent} className="bg-background dark:border-none" />
     </div>
   );
 };

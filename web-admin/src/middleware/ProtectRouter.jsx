@@ -1,7 +1,8 @@
 import { Outlet, useNavigate } from "react-router-dom";
 import { useEffect } from "react";
-import { useAuth } from "../context/auth/AuthContext";
 
+import { useAuth } from "../context/auth/AuthContext";
+import { useProfile } from "../context/profile/ProfileContext";
 
 import SideNav from "@/pages/nav/SideNav";
 import ErrorMiddleware from "./ErrorMiddleware";
@@ -9,12 +10,14 @@ import { validateToken } from "../service/Login";
 
 const ProtectRouter = () => {
   const { isAuth, token, error, Logout } = useAuth();
+  const { attImage, attUser } = useProfile(); 
 
   const Navigate = useNavigate();
 
   const Validate = async () => {
     try {
-      await validateToken();
+     const {name, role, uuid} = await validateToken();
+      attUser({name, role, uuid})
       
     } catch (error) {
       if (error.status == 401)
@@ -28,7 +31,7 @@ const ProtectRouter = () => {
   }, [token, isAuth]);
 
   return (
-    <div className="h-full bg-window m-auto border-b border-gray-200 dark:border-[unset] mb-1 flex md:flex-row flex-col">
+    <div className="h-full bg-content m-auto border-b border-gray-200 dark:border-none mb-1 flex md:flex-row flex-col">
       <SideNav />
       {error ? (
         <ErrorMiddleware error={error} />

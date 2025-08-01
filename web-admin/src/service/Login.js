@@ -10,9 +10,21 @@ export const handdleLogin = async (username, password) => {
 };
 
 export const validateToken = async () => {
-    const token = localStorage.getItem("token")
+  const token = localStorage.getItem("token");
 
-    const { data } = await API.post("/login/verify", {token});
+  const { data } = await API.post("/login/verify", { token });
 
-    return data
+  return data;
+};
+
+export const alterPassword = async () => {
+  const { data } = await API.post(
+    "/login/alterpwd",
+    { oldPassword, newPassword },
+    {
+      headers: { Authorization: localStorage.getItem("token") },
+    }
+  );
+
+  return data;
 };

@@ -13,7 +13,7 @@ import {handdleLogin} from '@Service/Login'
 import { useToast } from '@Context/toast/ToastContext'
 
 export default function Login() {
-  const { attImage } = useProfile(); 
+  const { attImage, attUser } = useProfile(); 
   const { Login } = useAuth();
   const Navigate = useNavigate();
   const { showToast } = useToast()
@@ -29,12 +29,14 @@ export default function Login() {
   /* ------------------------------------------------------------------ */
   const onSubmit = async (credentials) => {
     try {
-      const {token} = await handdleLogin(credentials.username, credentials.password)
+      const {token, user} = await handdleLogin(credentials.username, credentials.password)
+      console.log(user)
       Login(token);
+      attUser(user)
       attImage(null);
       Navigate("/Admin");
     } catch (error) {
-      showToast("error", "error", error.response.data.message)
+      showToast("error", "error", error.response?.data.message)
     }
   };
 
