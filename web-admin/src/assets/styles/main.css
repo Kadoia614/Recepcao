@@ -22,9 +22,9 @@
 
 /* Paleta customizada baseada em #4345a5 */
 @theme {
-  --color-font-primary: #374151; /* gray-700 */
-  --color-font-secondary: #6b7280; /* gray-500 */
-  --color-font-selected: #eeeeee; /* When selected */
+  --color-font-primary: #374151;
+  --color-font-secondary: #4345a5;
+  --color-font-selected: #eeeeee; /* gray-400 */
 
   --color-primary: #4345a5; /* To Buttons */
   --color-primary-light: #6366f1; /* to disable */
@@ -42,8 +42,8 @@
 }
 
 [data-theme="dark"] {
-  --color-font-primary: #eeeeee; /* gray-500 */
-  --color-font-secondary: #99a1af; /* gray-400 */
+  --color-font-primary: #374151; /* gray-500 */
+  --color-font-secondary: #eeeeee; /* gray-400 */
 
   --color-primary: #6366f1;
   --color-primary-light: #a5b4fc;
@@ -58,7 +58,7 @@
 }
 
 #App {
-  @apply bg-background text-font-primary;
+  @apply bg-background;
 }
 
 #root {
@@ -86,7 +86,7 @@
 /* End region Inputs */
 
 .selected {
-  @apply bg-primary-light dark:text-font-primary text-font-selected;
+  @apply bg-primary-light text-shadow-indigo-50 text-font-selected;
 }
 
 .p-datatable {

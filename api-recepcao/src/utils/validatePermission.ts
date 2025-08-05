@@ -65,8 +65,6 @@ const validateMethod = (
 
   const ok = allowedMethods.includes(method.toUpperCase());
 
-  console.log(ok)
-
   return {
     ok,
     message: ok ? "Allowed method" : "Method not permitted",

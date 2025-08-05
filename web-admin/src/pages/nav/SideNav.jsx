@@ -21,7 +21,7 @@ const SideNav = () => {
           return (
             <li
               key={index}
-              className={`rounded-md md:text-start text-center text-nowrap ${
+              className={`rounded-md md:text-start text-center text-nowrap text-font-secondary ${
                 tab === item.path ? "selected" : ""
               }`}
               onClick={() => {

@@ -60,7 +60,6 @@ export const createVisitorController = async (
     if (!result.ok) {
       throw { ok: false, code: result.code, message: result.message };
     }
-    console.log(result);
     reply.status(201).send({
       message: result.message,
       visitor: result.visitor,
@@ -121,7 +120,6 @@ export const updateVisitorController = async (
     if (!result.ok) {
       throw { ok: false, code: result.code, message: result.message };
     }
-    console.log(result);
     reply.status(201).send({
       message: result.message,
       visitor: result.visitor,

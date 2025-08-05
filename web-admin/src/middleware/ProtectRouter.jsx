@@ -7,39 +7,50 @@ import { useProfile } from "../context/profile/ProfileContext";
 import SideNav from "@/pages/nav/SideNav";
 import ErrorMiddleware from "./ErrorMiddleware";
 import { validateToken } from "../service/Login";
+import { useLoading } from "../context/loading/LoadingContext";
 
 const ProtectRouter = () => {
   const { isAuth, token, error, Logout } = useAuth();
-  const { attImage, attUser } = useProfile(); 
+  const { attImage, attUser, user } = useProfile();
+  const { loading, attLoading } = useLoading();
 
   const Navigate = useNavigate();
 
   const Validate = async () => {
+    attLoading(true);
     try {
-     const {name, role, uuid} = await validateToken();
-      attUser({name, role, uuid})
-      
+      const { name, role, uuid } = await validateToken();
+      await attUser({ name, role, uuid });
     } catch (error) {
-      if (error.status == 401)
-        Logout()
+      if (error.status == 401) Logout();
+    } finally {
+      attLoading(false);
     }
   };
 
   useEffect(() => {
     !isAuth || !token ? Navigate("/") : "";
-    Validate()
+    Validate();
   }, [token, isAuth]);
+
+  if (error) {
+    <div className="h-full bg-content m-auto border-b border-gray-200 dark:border-none mb-1 flex md:flex-row flex-col">
+      <SideNav />
+
+      <ErrorMiddleware error={error} />
+    </div>;
+  }
+
+  if (loading) {
+    return <></>;
+  }
 
   return (
     <div className="h-full bg-content m-auto border-b border-gray-200 dark:border-none mb-1 flex md:flex-row flex-col">
       <SideNav />
-      {error ? (
-        <ErrorMiddleware error={error} />
-      ) : (
-        <div className="p-8 overflow-x-hidden w-full">
-          <Outlet></Outlet>
-        </div>
-      )}
+      <div className="p-8 overflow-x-hidden w-full">
+        <Outlet></Outlet>
+      </div>
     </div>
   );
 };

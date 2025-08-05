@@ -30,7 +30,6 @@ export default function Login() {
   const onSubmit = async (credentials) => {
     try {
       const {token, user} = await handdleLogin(credentials.username, credentials.password)
-      console.log(user)
       Login(token);
       attUser(user)
       attImage(null);

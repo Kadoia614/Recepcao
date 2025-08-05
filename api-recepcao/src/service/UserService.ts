@@ -82,7 +82,11 @@ export class UserService {
       password: hashPassword,
     });
 
-    await sendMail(data.email, "Reception Password", `Your password is: ${password}`);
+    await sendMail(
+      data.email,
+      "Reception Password",
+      `Your password is: ${password}`
+    );
 
     return {
       ok: true,
@@ -198,6 +202,44 @@ export class UserService {
       ok: true,
       code: 200,
       message: "user deleted successfully",
+    };
+  }
+
+  static async alterPassword(
+    uuid: string,
+    oldPassword: string,
+    newPassword: string
+  ): Promise<GenericResponse> {
+    let user = await UserDB.findByPk(uuid);
+
+    if (!user) {
+      return {
+        ok: false,
+        code: 404,
+        message: "User not found",
+      };
+    }
+
+    const valid =
+      user.password && (await bcrypt.compare(oldPassword, user.password));
+
+    if (!valid) {
+      return {
+        ok: false,
+        code: 403,
+        message: "Password incorrect",
+      };
+    }
+
+    const hashPassword = await bcrypt.hash(newPassword, 10);
+    user.password = hashPassword;
+
+    user.save()
+    
+    return {
+      ok: true,
+      code: 200,
+      message: "Password succefull altered",
     };
   }
 }

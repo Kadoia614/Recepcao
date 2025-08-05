@@ -17,9 +17,11 @@ import Loading from "./middleware/Loading";
 
 import { useThemeContext } from "@/context/theme/ThemeContext";
 import Singout from "./pages/Singout";
+import { useLoading } from "./context/loading/LoadingContext";
 
 function App() {
   const { theme } = useThemeContext();
+  const { loading } = useLoading
   return (
     <div
       id="App"
@@ -31,8 +33,8 @@ function App() {
           <h1>Your theme: {theme}</h1>
         </div>
         <Router>
-          {/* Feature to add */}
-          {/* <Loading></Loading> */}
+          
+          {loading && <Loading></Loading>}
           <Nav />
           <Routes>
             <Route index element={<Login></Login>}></Route>

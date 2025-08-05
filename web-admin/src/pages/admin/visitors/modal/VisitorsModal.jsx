@@ -143,7 +143,6 @@ const VisitorsModal = ({ visible, onHide }) => {
         {/* Upload de Foto */}
         <div className="w-full sm:w-[50%] m-auto">
           <label className="font-medium">Foto</label>
-          {console.log(visitorTarget)}
           <UploadFile
             setPhotoBase64={setPhotoBase64}
             photo={visitorTarget?.photo}
@@ -207,7 +206,6 @@ const VisitorsModal = ({ visible, onHide }) => {
             render={({ field }) => (
               <InputMask
                 onChange={(e) => {
-                  console.log(e);
                   setCEP(e.target.value);
                 }}
                 mask="99999-999"

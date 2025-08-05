@@ -9,30 +9,23 @@ import { useToast } from "@Context/toast/ToastContext";
 import { Divider } from "primereact/divider";
 
 const Config = () => {
-  const {
-    register,
-    control,
-    handleSubmit,
-  } = useForm({
+  const { showToast } = useToast();
+  const { user } = useProfile();
+
+  const { register, control, handleSubmit } = useForm({
+    defaultValues: {
+    username: user?.name || "",
     password: "",
     new_password: "",
-    confirm_password: "",
+    confirm_password: "",}
   });
-
-  const { showToast } = useToast();
-  const { user } = useProfile()
 
   // Submissão do formulário
   const onSubmit = async (data) => {
     try {
-      console.log(data);
       if (data.new_password != data.confirm_password) {
-        showToast(
-          "error",
-          "Erro",
-          "The two pass need be equal!"
-        );
-        return
+        showToast("error", "Erro", "The two pass need be equal!");
+        return;
       }
 
       alert("Funfou");
@@ -56,7 +49,7 @@ const Config = () => {
         >
           <div className="flex flex-col">
             <label className="font-medium">Username</label>
-            <InputText value={user?.name} disabled />
+            <InputText defaultValue="username" {...register("username")} disabled />
           </div>
           <div className="flex flex-col">
             <label className="font-medium">Password</label>

@@ -65,5 +65,3 @@ Visits.init(
     tableName: "Visits",
   }
 );
-
-// console.log(Room === sequelize.models.Room);

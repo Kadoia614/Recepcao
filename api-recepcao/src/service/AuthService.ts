@@ -7,7 +7,6 @@ import { SECRET_KEY_JWT } from "../config/env.js";
 
 export class Auth {
   static async Login(username: string, password: string): Promise<AuthResult> {
-    console.log(username, password);
     const user = await UserService.findUserByUsername(username);
 
     if (!user) {

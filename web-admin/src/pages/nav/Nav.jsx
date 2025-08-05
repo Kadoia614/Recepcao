@@ -78,7 +78,7 @@ export default function Nav() {
                     to={"/"}
                     aria-current={"Login"}
                     className={classNames(
-                      active === "/" && "bg-primary-light text-white",
+                      active === "/" && "bg-primary-ligh",
                       "rounded-md px-3 py-2 text-sm font-medium"
                     )}
                     onClick={() => setActive("/")}
@@ -95,8 +95,8 @@ export default function Nav() {
                         aria-current={item.current ? "page" : undefined}
                         className={classNames(
                           active.includes(item.href) &&
-                            "bg-primary-light text-white",
-                          "rounded-md px-3 py-2 text-sm font-medium"
+                            "bg-primary-light selected",
+                          "rounded-md px-3 py-2 text-sm font-medium text-font-secondary"
                         )}
                         onClick={() => setActive(item.href)}
                       >
@@ -153,7 +153,7 @@ export default function Nav() {
                   <MenuItem>
                     <Link
                       to="/Profile"
-                      className="block px-4 py-2 text-sm text-gray-700 data-focus:bg-gray-100 data-focus:outline-hidden"
+                      className="block px-4 py-2 text-sm data-focus:bg-gray-100 data-focus:outline-hidden text-font-primary"
                     >
                       Your Profile
                     </Link>
@@ -161,7 +161,7 @@ export default function Nav() {
                   <MenuItem>
                     <Link
                       to="/Profile/Configuration"
-                      className="block px-4 py-2 text-sm text-gray-700 data-focus:bg-gray-100 data-focus:outline-hidden"
+                      className="block px-4 py-2 text-sm data-focus:bg-gray-100 data-focus:outline-hidden text-font-primary"
                     >
                       Settings
                     </Link>
@@ -169,7 +169,7 @@ export default function Nav() {
                   <MenuItem>
                     <Link
                       to="/Singout"
-                      className="block px-4 py-2 text-sm text-gray-700 data-focus:bg-gray-100 data-focus:outline-hidden"
+                      className="block px-4 py-2 text-sm text-gray-700 data-focus:bg-gray-100 data-focus:outline-hidden text-font-primary"
                     >
                       Sign out
                     </Link>
@@ -192,7 +192,7 @@ export default function Nav() {
               to="/"
               onClick={() => setActive("/")}
               className={classNames(
-                active === "/" && "bg-primary-light text-white",
+                active === "/" && "bg-primary-light",
                 "block rounded-md px-3 py-2 text-base font-medium"
               )}
             >
@@ -209,8 +209,8 @@ export default function Nav() {
                 onClick={() => setActive(item.href)}
                 className={classNames(
                   active.startsWith(item.href)
-                    ? "bg-primary-light text-white"
-                    : " hover:bg-gray-700 hover:text-white",
+                    ? "bg-primary-light"
+                    : " hover:bg-gray-700",
                   "block rounded-md px-3 py-2 text-base font-medium"
                 )}
               >
