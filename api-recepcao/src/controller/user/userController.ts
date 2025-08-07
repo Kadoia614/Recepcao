@@ -14,11 +14,11 @@ export const createUserController = async (
   try {
     const data = request.body;
     const user: UserRequired = {
-      first_name: data.first_name,
-      last_name: data.last_name,
-      email: data.email,
-      cpf: data.cpf,
-      // password: data.password,
+      first_name: data.first_name.toLowerCase(),
+      last_name: data.last_name.toLowerCase(),
+      email: data.email.toLowerCase(),
+      cpf: data.cpf.toLowerCase(),
+      password: data.password,
       role: data.role,
     };
     const result = await UserService.CreateUser(user);

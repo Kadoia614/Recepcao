@@ -18,11 +18,11 @@ export const validateToken = async () => {
 };
 
 export const alterPassword = async (req) => {
-const {oldPassword, newPassword} = req
+const {old_password, new_password} = req
 
   const { data } = await API.post(
     "/login/alterpwd",
-    { oldPassword, newPassword, username },
+    { old_password, new_password },
     {
       headers: { Authorization: localStorage.getItem("token") },
     }

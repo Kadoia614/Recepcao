@@ -12,6 +12,7 @@ import {
 import validatorCPF from "../utils/validatorCPF.js";
 import { generateStrongPassword } from "../utils/passwordGenerator.js";
 import { sendMail } from "../utils/sendMail.js";
+import { APPLICATION_ENVORIMENT } from "../config/env.js";
 
 // Função utilitária para validar role
 const isValidRole = (role: string) =>
@@ -37,6 +38,11 @@ export class UserService {
     username: string
   ): Promise<UserAtributes | null> {
     const user = await UserDB.findOne({ where: { username } });
+    return user ? (user.toJSON() as UserAtributes) : null;
+  }
+
+  static async findUserByPK(uuid: string): Promise<UserAtributes | null> {
+    const user = await UserDB.findByPk(uuid);
     return user ? (user.toJSON() as UserAtributes) : null;
   }
 
@@ -70,9 +76,15 @@ export class UserService {
     }
 
     // Define username e criptografa senha
-    const password = generateStrongPassword();
-    // const password = data.password;
     const username = `${data.first_name}.${data.last_name}`.toLowerCase();
+    let password = null;
+
+    if (APPLICATION_ENVORIMENT == "dev") {
+      password = data.password || generateStrongPassword();
+    } else {
+      password = generateStrongPassword();
+    }
+
     const hashPassword = await bcrypt.hash(password, 10);
 
     // Cria usuário
@@ -234,8 +246,8 @@ export class UserService {
     const hashPassword = await bcrypt.hash(newPassword, 10);
     user.password = hashPassword;
 
-    user.save()
-    
+    user.save();
+
     return {
       ok: true,
       code: 200,

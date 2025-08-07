@@ -12,6 +12,8 @@ function must(name: string): string {
   return val;
 }
 
+export const APPLICATION_ENVORIMENT = must('APPLICATION_ENVORIMENT')
+
 export const PORT = must('APPLICATION_PORT');
 
 export const SECRET_KEY_JWT = must('SECRET_KEY_JWT');

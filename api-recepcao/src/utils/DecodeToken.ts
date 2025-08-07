@@ -1,14 +1,20 @@
 import jwt from "jsonwebtoken";
 import { SECRET_KEY_JWT } from "../config/env.js";
 
-interface TokenResult {
-  ok: boolean;
-  code?: number;
-  name?: string
+interface TokenSuccess {
+  ok: true;
+  name: string
   message: string;
-  role?: string;
-  uuid?: string;
+  role: string;
+  uuid: string;
 }
+interface TokenFail {
+  ok: false;
+  code?: number;
+  message: string;
+}
+
+type TokenResult = TokenSuccess | TokenFail
 
 export async function decodeToken(token: string): Promise<TokenResult> {
   if (!token) {

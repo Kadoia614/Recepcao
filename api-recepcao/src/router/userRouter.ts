@@ -8,6 +8,7 @@ import {
 
 import { authJWT } from "../middleware/authJWT.js";
 import { checkPermissions } from "../middleware/checkPermissions.js";
+import { APPLICATION_ENVORIMENT } from "../config/env.js";
 
 const userSchema = {
   type: "object",
@@ -17,6 +18,7 @@ const userSchema = {
     last_name: { type: "string" },
     role: { type: "string" },
     email: { type: "string", format: "email" },
+    password: { type: "string" },
     cpf: { type: "string" },
   },
   additionalProperties: false,
@@ -47,9 +49,14 @@ const responseUserSchema = {
 };
 
 export async function userRouter(app: FastifyInstance) {
+  // if (APPLICATION_ENVORIMENT != "dev") {
+  //   app.addHook("preHandler", authJWT);
+  //   app.addHook("preHandler", checkPermissions);
+  // }
+
   app.addHook("preHandler", authJWT);
   app.addHook("preHandler", checkPermissions);
-  
+
   app.route({
     method: "POST",
     url: "/",

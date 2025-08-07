@@ -7,6 +7,7 @@ import { useProfile } from "@Context/profile/ProfileContext";
 import { useToast } from "@Context/toast/ToastContext";
 
 import { Divider } from "primereact/divider";
+import { alterPassword } from "../../../service/Login";
 
 const Config = () => {
   const { showToast } = useToast();
@@ -14,10 +15,11 @@ const Config = () => {
 
   const { register, control, handleSubmit } = useForm({
     defaultValues: {
-    username: user?.name || "",
-    password: "",
-    new_password: "",
-    confirm_password: "",}
+      username: user?.name || "",
+      old_password: "",
+      new_password: "",
+      confirm_password: "",
+    },
   });
 
   // Submissão do formulário
@@ -27,8 +29,13 @@ const Config = () => {
         showToast("error", "Erro", "The two pass need be equal!");
         return;
       }
-
-      alert("Funfou");
+      alert(JSON.stringify(data));
+      const response = await alterPassword(data);
+      showToast(
+        "success",
+        "Sucesso",
+        response.message || "Altered successfully"
+      );
     } catch (error) {
       showToast(
         "error",
@@ -49,13 +56,29 @@ const Config = () => {
         >
           <div className="flex flex-col">
             <label className="font-medium">Username</label>
-            <InputText defaultValue="username" {...register("username")} disabled />
+            <InputText
+              defaultValue="username"
+              {...register("username")}
+              disabled
+            />
           </div>
           <div className="flex flex-col">
             <label className="font-medium">Password</label>
             <div className="p-inputgroup flex-1">
               <span className="p-inputgroup-addon">*</span>
-              <Password {...register("password")} feedback={false} toggleMask />
+              <Controller
+                name="old_password"
+                control={control}
+                rules={{ required: "Mandatory" }}
+                render={({ field }) => (
+                  <Password
+                    value={field.value}
+                    onChange={(e) => field.onChange(e)}
+                    feedback={false}
+                    toggleMask
+                  />
+                )}
+              />
             </div>
           </div>
           <div className="flex flex-col">

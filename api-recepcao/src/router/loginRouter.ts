@@ -2,6 +2,7 @@ import { FastifyInstance } from "fastify";
 import { loginController } from "../controller/auth/loginController.js";
 import { ValidateTokenController } from "../controller/auth/validateTokenController.js";
 import { AlterPwdController } from "../controller/auth/alterpwdController.js";
+import { authJWT } from "../middleware/authJWT.js";
 
 export async function loginRouter(app: FastifyInstance) {
   app.route({
@@ -89,6 +90,7 @@ export async function loginRouter(app: FastifyInstance) {
   app.route({
     method: "POST",
     url: "/alterpwd",
+    preHandler: [authJWT],
     schema: {
       tags: ["Login"],
       summary: "Verify the Token's integrity",

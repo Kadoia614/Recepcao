@@ -8,11 +8,12 @@ export interface UserRequired {
   last_name: string;
   role: "admin" | "user" | "recepcionist" | "superadmin";
   email: string;
+  password?: string;
   cpf: string;
 }
 
 export interface UserAuto {
-  password: string;
+  password?: string;
   username: string;
 }
 
