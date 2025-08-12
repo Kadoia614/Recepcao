@@ -9,7 +9,7 @@ import { Router } from "./router/routes.js";
 import { PORT } from "./config/env.js";
 import { interfaceErrorResponse } from "./types/errorTypes.js";
 
-import "./db/model/association.js"
+import "./db/model/association.js";
 
 const app = fastify();
 
@@ -43,7 +43,7 @@ app.setErrorHandler((error, request, reply) => {
     message: error.message || "Internal Server Error",
   };
 
-  reply.status(response.code).send({message: response.message, ok: false});
+  reply.status(response.code).send({ message: response.message, ok: false });
 
   // Log the error details for debugging
   console.error("Error occurred:", error);

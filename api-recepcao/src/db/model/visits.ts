@@ -12,8 +12,9 @@ export class Visits extends Model<
   InferCreationAttributes<Visits>
 > {
   declare uuid: CreationOptional<string>;
-  declare creator_uuid: CreationOptional<string>;
-  declare visitor_uuid: CreationOptional<string>;
+  declare creator_uuid: string;
+  declare visitor_uuid: string;
+  declare subject: string;
 
   declare createdAt: CreationOptional<Date>;
   declare updatedAt: CreationOptional<Date>;
@@ -33,8 +34,8 @@ Visits.init(
       allowNull: false,
       references: {
         model: "Users",
-        key: "uuid"
-      }
+        key: "uuid",
+      },
     },
 
     visitor_uuid: {
@@ -42,10 +43,13 @@ Visits.init(
       allowNull: false,
       references: {
         model: "Visitors",
-        key: "uuid"
-      }
+        key: "uuid",
+      },
     },
-
+    subject: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
     createdAt: {
       type: DataTypes.DATE,
       defaultValue: DataTypes.NOW,
