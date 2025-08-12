@@ -12,7 +12,7 @@ import { Divider } from "primereact/divider";
 import { useToast } from "@Context/toast/ToastContext";
 import { useVisitors } from "@Context/visitors/VisitorsContext";
 
-import UploadFile from "./uploadFile/UploadFile";
+import UploadFile from "./uploadFile/upload/UploadFile";
 
 const VisitorsModal = ({ visible, onHide }) => {
   const [CEP, setCEP] = useState("");
@@ -97,6 +97,7 @@ const VisitorsModal = ({ visible, onHide }) => {
       if (visitorTarget) {
         const { message, visitor } = await putVisitor(data, data.uuid);
         updateVisitor(visitor);
+        setPhotoBase64(null);
         showToast("success", "Sucesso", message || "Visitante atualizado");
       } else {
         const { visitor, message } = await postVisitor(data);
@@ -111,6 +112,7 @@ const VisitorsModal = ({ visible, onHide }) => {
 
   const handleClose = () => {
     setVisitorTarget(null);
+    setPhotoBase64(null);
     reset({
       defaultValues: {
         uuid: null,
@@ -128,13 +130,23 @@ const VisitorsModal = ({ visible, onHide }) => {
     onHide();
   };
 
+  const header = (
+    <div className="flex items-center gap-3">
+      <i className="pi pi-pencil text-2xl text-font-secondary" />
+      <span className="text-xl font-bold text-font-secondary">
+        {visitorTarget ? "Editar Visitante" : "Cadastro de Visitante"}
+      </span>
+    </div>
+  );
+
   return (
     <Dialog
-      header={visitorTarget ? "Editar Visitante" : "Cadastro de Visitante"}
+      header={header}
       visible={visible}
       onHide={handleClose}
       modal
       className="p-fluid w-3xl"
+      breakpoints={{ "960px": "75vw", "641px": "100vw" }}
     >
       <form
         onSubmit={handleSubmit(onSubmit)}
@@ -145,7 +157,7 @@ const VisitorsModal = ({ visible, onHide }) => {
           <label className="font-medium">Foto</label>
           <UploadFile
             setPhotoBase64={setPhotoBase64}
-            photo={visitorTarget?.photo}
+            photo={photoBase64 || visitorTarget?.photo || null}
           />
         </div>
 

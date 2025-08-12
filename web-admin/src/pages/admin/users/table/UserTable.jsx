@@ -84,7 +84,7 @@ const UserTable = ({ setEditIsVisible, setExcludeIsVisible }) => {
       <div className="p-inputgroup flex-1 pb-4">
         <InputText
           type="search"
-          placeholder="Pesquisar por nome, CPF ou sobrenome"
+          placeholder="Search for name"
           value={query.search || ""}
           onChange={(e) =>
             setQuery((prev) => ({
@@ -128,13 +128,13 @@ const UserTable = ({ setEditIsVisible, setExcludeIsVisible }) => {
         rows={query.limit}
         totalRecords={totalUsers}
         rowsPerPageOptions={[1, 10, 20, 30]}
-        onPageChange={(e) =>{
+        onPageChange={(e) => {
           setQuery((prev) => ({
             ...prev,
             page: e.page,
             limit: e.rows,
-          }))}
-        }
+          }));
+        }}
       />
     </section>
   );

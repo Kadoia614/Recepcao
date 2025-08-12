@@ -34,19 +34,26 @@ const VisitorsDeleteModal = ({ visible, onHide }) => {
     onHide();
   };
 
+  const header = (
+    <div className="flex items-center gap-3">
+      <i className="pi pi-trash text-2xl text-red-500" />
+      <span className="text-xl font-bold text-red-500">Delete User?</span>
+    </div>
+  );
+
   return (
     <Dialog
-      header="Excluir Usuário"
+      header={header}
       visible={visible}
       style={{ width: "25rem" }}
       onHide={onHide}
       modal
-      className="p-fluid"
+      className="p-fluid w-xl"
     >
       <div className="mb-4">
         <p>
-          Are you sure you want to delete the Visitor <b>{visitorTarget?.name}</b>
-          ?
+          Are you sure you want to delete the Visitor{" "}
+          <b>{visitorTarget?.name}</b>?
         </p>
       </div>
       <div className="flex justify-end gap-2">

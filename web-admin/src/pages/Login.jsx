@@ -8,18 +8,18 @@ import { useAuth } from "../context/auth/AuthContext";
 
 import { useNavigate } from "react-router-dom";
 
-import {handdleLogin} from '@Service/Login'
+import { handdleLogin } from "@Service/Login";
 
-import { useToast } from '@Context/toast/ToastContext'
+import { useToast } from "@Context/toast/ToastContext";
 
 export default function Login() {
-  const { attImage, attUser } = useProfile(); 
+  const { attImage, attUser } = useProfile();
   const { Login } = useAuth();
   const Navigate = useNavigate();
-  const { showToast } = useToast()
+  const { showToast } = useToast();
   /* ------------------------------------------------------------------ */
   const {
-    control, 
+    control,
     handleSubmit,
     formState: { errors, isSubmitting },
   } = useForm({
@@ -29,13 +29,16 @@ export default function Login() {
   /* ------------------------------------------------------------------ */
   const onSubmit = async (credentials) => {
     try {
-      const {token, user} = await handdleLogin(credentials.username, credentials.password)
+      const { token, user } = await handdleLogin(
+        credentials.username,
+        credentials.password
+      );
       Login(token);
-      attUser(user)
+      attUser(user);
       attImage(null);
       Navigate("/Admin");
     } catch (error) {
-      showToast("error", "error", error.response?.data.message)
+      showToast("error", "error", error.response?.data.message);
     }
   };
 
@@ -44,7 +47,7 @@ export default function Login() {
     <div id="Login" className="flex justify-center items-center h-full w-full">
       <form
         onSubmit={handleSubmit(onSubmit)}
-        className="bg-window rounded-md w-80 max-w-[90%] p-4 shadow-2xl"
+        className="bg-window rounded-md p-4 shadow-2xl"
       >
         <h1 className="text-6xl text-center mb-4">Login</h1>
 
