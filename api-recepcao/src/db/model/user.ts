@@ -20,7 +20,7 @@ export class UserDB extends Model<
   declare email: string;
   declare cpf: string;
   declare password: string;
-  declare role: "admin" | "user";
+  declare role: "admin" | "user" | "recepcionist" | "superadmin";
   
   declare firstLogin: CreationOptional<boolean>;
   declare createdAt: CreationOptional<Date>;
@@ -60,7 +60,7 @@ UserDB.init(
       allowNull: false,
     },
     role: {
-      type: DataTypes.ENUM("admin", "user"),
+      type: DataTypes.ENUM("admin", "user", "recepcionist", "superadmin"),
       allowNull: false,
     },
     firstLogin: {
@@ -82,4 +82,3 @@ UserDB.init(
   }
 );
 
-// console.log(UserDB === sequelize.models.User);

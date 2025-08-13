@@ -1,7 +1,32 @@
-import API from "./API";
+import API from "@API/API";
 
 export const handdleLogin = async (username, password) => {
-    const {data} = await API.post("/login", {username: username, password: password})
+  const { data } = await API.post("/login", {
+    username: username,
+    password: password,
+  });
 
-    return data
-}
+  return data;
+};
+
+export const validateToken = async () => {
+  const token = localStorage.getItem("token");
+
+  const { data } = await API.post("/login/verify", { token });
+
+  return data;
+};
+
+export const alterPassword = async (req) => {
+const {old_password, new_password} = req
+
+  const { data } = await API.post(
+    "/login/alterpwd",
+    { old_password, new_password },
+    {
+      headers: { Authorization: localStorage.getItem("token") },
+    }
+  );
+
+  return data;
+};

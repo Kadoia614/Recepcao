@@ -9,6 +9,8 @@ import { Router } from "./router/routes.js";
 import { PORT } from "./config/env.js";
 import { interfaceErrorResponse } from "./types/errorTypes.js";
 
+import "./db/model/association.js";
+
 const app = fastify();
 
 app.register(fastifyCors, { origin: "*" });
@@ -31,7 +33,7 @@ app.register(fastifySwagger, {
 });
 
 app.register(fastifySwaggerUi, {
-  routePrefix: "/docs",
+  routePrefix: "/documentation",
 });
 
 app.setErrorHandler((error, request, reply) => {
@@ -41,7 +43,7 @@ app.setErrorHandler((error, request, reply) => {
     message: error.message || "Internal Server Error",
   };
 
-  reply.status(response.code).send(response);
+  reply.status(response.code).send({ message: response.message, ok: false });
 
   // Log the error details for debugging
   console.error("Error occurred:", error);

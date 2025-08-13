@@ -12,9 +12,14 @@ function must(name: string): string {
   return val;
 }
 
+export const APPLICATION_ENVORIMENT = must('APPLICATION_ENVORIMENT')
+
 export const PORT = must('APPLICATION_PORT');
 
-export const SECRET_KEY = must('SECRET_KEY');
+export const SECRET_KEY_JWT = must('SECRET_KEY_JWT');
+
+export const SECRET_EMAIL = must('SECRET_EMAIL');
+export const SECRET_PASSWORD = must('SECRET_PASSWORD');
 
 export const DATABASE_USER = must('DATABASE_USER');
 export const DATABASE_KEY = must('DATABASE_KEY');

@@ -7,7 +7,8 @@ const SideNav = () => {
   const navigation = [
     { name: "Visitors", path: "/Admin", icon: "pi-pen-to-square" },
     { name: "Users", path: "/Admin/Users", icon: "pi-user" },
-    { name: "Calendar", path: "/Admin/Calendar", icon: "pi-calendar" },
+    // { name: "Calendar", path: "/Admin/Calendar", icon: "pi-calendar" },
+    { name: "Visits", path: "/Admin/visits", icon: "pi-cog" },
     { name: "Configurations", path: "/Admin/Configurations", icon: "pi-cog" },
   ];
 
@@ -21,7 +22,7 @@ const SideNav = () => {
           return (
             <li
               key={index}
-              className={`rounded-md md:text-start text-center text-nowrap ${
+              className={`rounded-md md:text-start text-center text-nowrap text-font-secondary ${
                 tab === item.path ? "selected" : ""
               }`}
               onClick={() => {

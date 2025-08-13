@@ -1,5 +1,8 @@
 import { FastifyInstance } from "fastify";
 import { loginController } from "../controller/auth/loginController.js";
+import { ValidateTokenController } from "../controller/auth/validateTokenController.js";
+import { AlterPwdController } from "../controller/auth/alterpwdController.js";
+import { authJWT } from "../middleware/authJWT.js";
 
 export async function loginRouter(app: FastifyInstance) {
   app.route({
@@ -43,5 +46,89 @@ export async function loginRouter(app: FastifyInstance) {
       },
     },
     handler: loginController,
+  });
+
+  app.route({
+    method: "POST",
+    url: "/verify",
+    schema: {
+      tags: ["Login"],
+      summary: "Verify the Token's integrity",
+      description: "Route to verify a token integrity",
+      body: {
+        type: "object",
+        properties: { token: { type: "string" } },
+        required: ["token"],
+      },
+      response: {
+        200: {
+          properties: {
+            uuid: { type: "string" },
+            role: { type: "string", example: "Admin" },
+            message: { type: "string", example: "Token validate Confirm" },
+            name: { type: "string", example: "Your.Username" },
+            ok: { type: "boolean", example: true },
+          },
+        },
+        401: {
+          properties: {
+            message: { type: "string", example: "Invallid token" },
+            ok: { type: "boolean", example: false },
+          },
+        },
+        500: {
+          properties: {
+            message: { type: "string", example: "Internal Error" },
+            ok: { type: "boolean", example: false },
+          },
+        },
+      },
+    },
+    handler: ValidateTokenController,
+  });
+
+  app.route({
+    method: "POST",
+    url: "/alterpwd",
+    preHandler: [authJWT],
+    schema: {
+      tags: ["Login"],
+      summary: "Verify the Token's integrity",
+      description: "Route to verify a token integrity",
+      body: {
+        type: "object",
+        properties: {
+          new_password: { type: "string" },
+          old_password: {
+            type: "string",
+          },
+        },
+        required: ["new_password", "old_password"],
+      },
+      response: {
+        200: {
+          properties: {
+            uuid: { type: "string" },
+            role: { type: "string", example: "Admin" },
+            message: { type: "string", example: "Token validate Confirm" },
+            name: { type: "string", example: "Your.Username" },
+            ok: { type: "boolean", example: true },
+          },
+        },
+        401: {
+          properties: {
+            message: { type: "string", example: "Invallid token" },
+            ok: { type: "boolean", example: false },
+          },
+        },
+        500: {
+          properties: {
+            message: { type: "string", example: "Internal Error" },
+            ok: { type: "boolean", example: false },
+          },
+        },
+      },
+    },
+    handler: AlterPwdController,
   });
 }

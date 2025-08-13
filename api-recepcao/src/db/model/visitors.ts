@@ -45,7 +45,7 @@ Visitors.init(
       allowNull: false,
     },
     photo: {
-      type: DataTypes.STRING,
+      type: DataTypes.TEXT("medium"),
       allowNull: true,
     },
     email: {
@@ -92,4 +92,3 @@ Visitors.init(
   }
 );
 
-// console.log(Room === sequelize.models.Room);

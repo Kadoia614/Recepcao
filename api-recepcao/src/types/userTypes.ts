@@ -6,11 +6,15 @@ export interface UserParams {
 export interface UserRequired {
   first_name: string;
   last_name: string;
-  username: string;
-  role: "admin" | "user";
+  role: "admin" | "user" | "recepcionist" | "superadmin";
   email: string;
-  password: string;
+  password?: string;
   cpf: string;
+}
+
+export interface UserAuto {
+  password?: string;
+  username: string;
 }
 
 export interface UserOptional extends UserParams {
@@ -20,7 +24,7 @@ export interface UserOptional extends UserParams {
   deletedAt: Date | null;
 }
 
-export interface UserAtributes extends UserRequired, UserOptional {}
+export interface UserAtributes extends UserRequired, UserOptional, UserAuto {}
 
 
 // response to methodes
@@ -54,9 +58,14 @@ interface UserFail {
 
 export type UserGenericResponse = userSuccessful | UserFail;
 
-
 export type UserQueryParams = {
   search?: string;
   page?: number;
   limit?: number;
 };
+
+export interface GenericResponse {
+  ok: boolean;
+  code: number;
+  message: string;
+}

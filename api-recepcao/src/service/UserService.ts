@@ -1,4 +1,5 @@
 import bcrypt from "bcryptjs";
+import { Op } from "sequelize";
 import { UserDB } from "../db/model/user.js";
 import {
   UserAtributes,
@@ -6,33 +7,58 @@ import {
   UserGenericResponse,
   UserQueryParams,
   GetUserGenericResponse,
+  GenericResponse,
 } from "../types/userTypes.js";
 import validatorCPF from "../utils/validatorCPF.js";
-import { Op } from "sequelize";
+import { generateStrongPassword } from "../utils/passwordGenerator.js";
+import { sendMail } from "../utils/sendMail.js";
+import { APPLICATION_ENVORIMENT } from "../config/env.js";
+
+// Função utilitária para validar role
+const isValidRole = (role: string) =>
+  ["admin", "user", "recepcionist", "superadmin"].includes(role);
+
+// Função utilitária para verificar duplicidade de email/cpf
+const isDuplicateUser = async (
+  email: string,
+  cpf?: string | null,
+  excludeUuid?: string
+) => {
+  const where: any = {
+    [Op.or]: [{ email }, { cpf }],
+  };
+  if (excludeUuid) {
+    where.uuid = { [Op.ne]: excludeUuid };
+  }
+  return await UserDB.findOne({ where });
+};
 
 export class UserService {
   static async findUserByUsername(
     username: string
   ): Promise<UserAtributes | null> {
     const user = await UserDB.findOne({ where: { username } });
+    return user ? (user.toJSON() as UserAtributes) : null;
+  }
 
+  static async findUserByPK(uuid: string): Promise<UserAtributes | null> {
+    const user = await UserDB.findByPk(uuid);
     return user ? (user.toJSON() as UserAtributes) : null;
   }
 
   static async CreateUser(data: UserRequired): Promise<UserGenericResponse> {
-    // valida role
-    if (data.role !== "admin" && data.role !== "user") {
+    // Validações
+    if (!isValidRole(data.role)) {
       return {
         ok: false,
         code: 400,
-        message: "O campo 'role' deve ser 'admin' ou 'user'",
+        message:
+          "the field 'role' must be 'admin', 'user', 'recepcionist' or 'superadmin'",
       };
     }
 
-    // valida CPF
-    const isValid = validatorCPF(data.cpf);
-
-    if (!isValid.ok) {
+    const cpfValidation = validatorCPF(data.cpf);
+    if (!cpfValidation.ok) {
       return {
         ok: false,
         code: 403,
@@ -40,14 +66,8 @@ export class UserService {
       };
     }
 
-    // verifica se já existe com o mesmo email
-    const alreadyCreated = await UserDB.findOne({
-      where: {
-        email: data.email,
-      },
-    });
-
-    if (alreadyCreated) {
+    // Verifica duplicidade
+    if (await isDuplicateUser(data.email, data.cpf)) {
       return {
         ok: false,
         code: 403,
@@ -55,12 +75,30 @@ export class UserService {
       };
     }
 
-    // define username e criptografa password
-    data.username = data.first_name.concat("." + data.last_name).toLowerCase();
-    data.password = await bcrypt.hash(data.password, 10);
+    // Define username e criptografa senha
+    const username = `${data.first_name}.${data.last_name}`.toLowerCase();
+    let password = null;
 
-    // cria user
-    const newUser = await UserDB.create({ ...data });
+    if (APPLICATION_ENVORIMENT == "dev") {
+      password = data.password || generateStrongPassword();
+    } else {
+      password = generateStrongPassword();
+    }
+
+    const hashPassword = await bcrypt.hash(password, 10);
+
+    // Cria usuário
+    const newUser = await UserDB.create({
+      ...data,
+      username: username,
+      password: hashPassword,
+    });
+
+    await sendMail(
+      data.email,
+      "Reception Password",
+      `Your password is: ${password}`
+    );
 
     return {
       ok: true,
@@ -74,38 +112,48 @@ export class UserService {
     id: string,
     data: UserRequired
   ): Promise<UserGenericResponse> {
-    try {
-      const isUser = await UserDB.findByPk(id);
+    const user = await UserDB.findByPk(id);
 
-      if (!isUser) {
-        return {
-          ok: false,
-          code: 404,
-          message: "Usuário não encontrado",
-        };
-      }
-
-      isUser.first_name = data.first_name;
-      isUser.last_name = data.last_name;
-      isUser.email = data.email;
-      isUser.role = data.role;
-      isUser.cpf = data.cpf;
-
-      isUser.save();
-
-      return {
-        ok: true,
-        code: 200,
-        message: "Alterado com sucesso",
-        user: isUser,
-      };
-    } catch (error: any) {
+    if (!user) {
       return {
         ok: false,
-        code: error.status || 500,
-        message: error.message || "Erro ao buscar usuários",
+        code: 404,
+        message: "Usuário não encontrado",
       };
     }
+
+    if (!isValidRole(data.role)) {
+      return {
+        ok: false,
+        code: 400,
+        message:
+          "O campo 'role' deve ser 'admin', 'user', 'recepcionist' ou 'superadmin'",
+      };
+    }
+
+    if (await isDuplicateUser(data.email, null, id)) {
+      return {
+        ok: false,
+        code: 403,
+        message: "Usuário Já existe",
+      };
+    }
+
+    // Atualiza campos
+    user.first_name = data.first_name;
+    user.last_name = data.last_name;
+    user.username = `${data.first_name}.${data.last_name}`.toLowerCase();
+    user.email = data.email;
+    user.role = data.role;
+
+    await user.save();
+
+    return {
+      ok: true,
+      code: 200,
+      message: "Alterado com sucesso",
+      user: user,
+    };
   }
 
   static async listUsers(
@@ -129,13 +177,13 @@ export class UserService {
             { first_name: { [Op.like]: `%${search}%` } },
             { last_name: { [Op.like]: `%${search}%` } },
             { email: { [Op.like]: `%${search}%` } },
-            { cpf: { [Op.like]: `%${search}%` } },
           ],
         }
       : {};
 
     const result = await UserDB.findAndCountAll({
       where,
+      attributes: { exclude: ["password", "cpf"] },
       offset,
       limit: Number(limit),
       order: [["createdAt", "DESC"]],
@@ -146,6 +194,64 @@ export class UserService {
       message: "Usuários encontrados com sucesso",
       user: result.rows,
       count: result.count,
+    };
+  }
+
+  static async deleteUser(uuid: string): Promise<GenericResponse> {
+    const user = await UserDB.findByPk(uuid);
+
+    if (!user) {
+      return {
+        ok: false,
+        code: 404,
+        message: "Usuário não encontrado",
+      };
+    }
+
+    await user.destroy();
+
+    return {
+      ok: true,
+      code: 200,
+      message: "user deleted successfully",
+    };
+  }
+
+  static async alterPassword(
+    uuid: string,
+    oldPassword: string,
+    newPassword: string
+  ): Promise<GenericResponse> {
+    let user = await UserDB.findByPk(uuid);
+
+    if (!user) {
+      return {
+        ok: false,
+        code: 404,
+        message: "User not found",
+      };
+    }
+
+    const valid =
+      user.password && (await bcrypt.compare(oldPassword, user.password));
+
+    if (!valid) {
+      return {
+        ok: false,
+        code: 403,
+        message: "Password incorrect",
+      };
+    }
+
+    const hashPassword = await bcrypt.hash(newPassword, 10);
+    user.password = hashPassword;
+
+    user.save();
+
+    return {
+      ok: true,
+      code: 200,
+      message: "Password succefull altered",
     };
   }
 }
