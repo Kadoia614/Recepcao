@@ -15,6 +15,7 @@ export class Visits extends Model<
   declare creator_uuid: string;
   declare visitor_uuid: string;
   declare subject: string;
+  declare date: Date;
 
   declare createdAt: CreationOptional<Date>;
   declare updatedAt: CreationOptional<Date>;
@@ -48,6 +49,10 @@ Visits.init(
     },
     subject: {
       type: DataTypes.STRING,
+      allowNull: false,
+    },
+    date: {
+      type: DataTypes.DATE,
       allowNull: false,
     },
     createdAt: {

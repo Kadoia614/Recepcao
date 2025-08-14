@@ -4,8 +4,8 @@ import {
   VisitorsQueryParams,
   GetVisitorssResponse,
   VisitorsGenericResponse,
-  VisitorsRequired,
   VisitorsParams,
+  VisitorsRequired,
 } from "../types/visitorTypes.js";
 
 export class VisitorsService {
@@ -87,7 +87,7 @@ export class VisitorsService {
     return {
       ok: true,
       message: "Visitante criado com sucesso",
-      visitor: newVisitor.toJSON(),
+      visitor: newVisitor,
     };
   }
 

@@ -23,7 +23,7 @@ export class Auth {
     const token = jwt.sign(
       { uuid: user.uuid, name: user.username, role: user.role },
       SECRET_KEY_JWT!,
-      { expiresIn: "1h" }
+      { expiresIn: "3h" }
     );
 
     const tokenResult = `Bearer ${token}`;

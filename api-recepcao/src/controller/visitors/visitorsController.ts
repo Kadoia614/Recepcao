@@ -3,7 +3,6 @@ import { VisitorsService } from "../../service/VisitorService.js";
 import {
   VisitorsQueryParams,
   VisitorsRequired,
-  VisitorsParams,
 } from "../../types/visitorTypes.js";
 
 export const getVisitorsController = async (
@@ -98,7 +97,7 @@ export const deleteVisitorController = async (
 };
 
 export const updateVisitorController = async (
-  request: FastifyRequest<{ Body: VisitorsRequired, Params: { uuid: string } }>,
+  request: FastifyRequest<{ Body: VisitorsRequired; Params: { uuid: string } }>,
   reply: FastifyReply
 ): Promise<void> => {
   try {

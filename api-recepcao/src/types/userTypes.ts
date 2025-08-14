@@ -1,6 +1,8 @@
+import { UserDB } from "../db/model/user.js";
+
 // Base Types
 export interface UserParams {
-    uuid: string;
+  uuid: string;
 }
 
 export interface UserRequired {
@@ -12,27 +14,12 @@ export interface UserRequired {
   cpf: string;
 }
 
-export interface UserAuto {
-  password?: string;
-  username: string;
-}
-
-export interface UserOptional extends UserParams {
-  firstLogin: boolean;
-  createdAt: Date;
-  updatedAt: Date;
-  deletedAt: Date | null;
-}
-
-export interface UserAtributes extends UserRequired, UserOptional, UserAuto {}
-
-
 // response to methodes
 interface getUserSucess {
   ok: true;
   message: string;
-  user: UserAtributes[];
-  count: number
+  user: UserDB[];
+  count: number;
 }
 
 interface getUserFail {
@@ -41,13 +28,13 @@ interface getUserFail {
   message: string;
 }
 
-export type GetUserGenericResponse = getUserSucess | getUserFail
+export type GetUserGenericResponse = getUserSucess | getUserFail;
 
 interface userSuccessful {
   ok: true;
   code: number;
   message: string;
-  user: UserAtributes;
+  user: UserDB;
 }
 
 interface UserFail {

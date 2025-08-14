@@ -2,7 +2,10 @@
 import { FastifyRequest, FastifyReply } from "fastify";
 import { validatePermission } from "../utils/validatePermission.js";
 
-export async function checkPermissions(request: FastifyRequest, reply: FastifyReply) {
+export async function checkPermissions(
+  request: FastifyRequest,
+  reply: FastifyReply
+) {
   const method = request.method;
   const routePath = request.url; // Ex: "/api/user/:uuid"
 
@@ -13,12 +16,7 @@ export async function checkPermissions(request: FastifyRequest, reply: FastifyRe
     return reply.code(403).send({ ok: false, message: "Permissão negada" });
   }
 
-  const validation = validatePermission(
-    request.body,
-    role,
-    method,
-    module,
-  );
+  const validation = validatePermission(request.body, role, method, module);
 
   if (!validation.ok) {
     return reply.code(403).send({ ok: false, message: validation.message });

@@ -2,12 +2,11 @@ import bcrypt from "bcryptjs";
 import { Op } from "sequelize";
 import { UserDB } from "../db/model/user.js";
 import {
-  UserAtributes,
-  UserRequired,
   UserGenericResponse,
   UserQueryParams,
   GetUserGenericResponse,
   GenericResponse,
+  UserRequired,
 } from "../types/userTypes.js";
 import validatorCPF from "../utils/validatorCPF.js";
 import { generateStrongPassword } from "../utils/passwordGenerator.js";
@@ -34,16 +33,14 @@ const isDuplicateUser = async (
 };
 
 export class UserService {
-  static async findUserByUsername(
-    username: string
-  ): Promise<UserAtributes | null> {
+  static async findUserByUsername(username: string): Promise<UserDB | null> {
     const user = await UserDB.findOne({ where: { username } });
-    return user ? (user.toJSON() as UserAtributes) : null;
+    return user ? (user.toJSON() as UserDB) : null;
   }
 
-  static async findUserByPK(uuid: string): Promise<UserAtributes | null> {
+  static async findUserByPK(uuid: string): Promise<UserDB | null> {
     const user = await UserDB.findByPk(uuid);
-    return user ? (user.toJSON() as UserAtributes) : null;
+    return user ? user : null;
   }
 
   static async CreateUser(data: UserRequired): Promise<UserGenericResponse> {

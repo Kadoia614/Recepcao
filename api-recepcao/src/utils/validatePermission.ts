@@ -35,6 +35,11 @@ const MethodesPermissions = {
     superadmin: ["GET", "POST", "PUT", "DELETE"],
     user: ["GET", "POST", "PUT"],
   },
+  visits: {
+    admin: ["GET", "POST"],
+    superadmin: ["GET", "POST", "PUT", "DELETE"],
+    user: ["GET", "POST"],
+  },
 };
 
 // Valida se os campos enviados são permitidos
@@ -83,7 +88,8 @@ export function validatePermission(
   message: string;
 } {
   console.log(data, role, method, module);
-  if(!role || !method || !module) return { ok: false, message: "Missing required"}
+  if (!role || !method || !module)
+    return { ok: false, message: "Missing required" };
 
   const methodValidation = validateMethod(method, role, module);
   if (!methodValidation.ok) {

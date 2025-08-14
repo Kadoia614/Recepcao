@@ -1,8 +1,9 @@
 import { FastifyReply, FastifyRequest } from "fastify";
+import { UserDB } from "../../db/model/user.js";
 import {
   UserParams,
-  UserRequired,
   UserQueryParams,
+  UserRequired,
 } from "../../types/userTypes.js";
 
 import { UserService } from "../../service/UserService.js";

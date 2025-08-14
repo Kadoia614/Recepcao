@@ -10,6 +10,7 @@ import { PORT } from "./config/env.js";
 import { interfaceErrorResponse } from "./types/errorTypes.js";
 
 import "./db/model/association.js";
+import { Log } from "./utils/GerarLog.js";
 
 const app = fastify();
 
@@ -36,6 +37,11 @@ app.register(fastifySwaggerUi, {
   routePrefix: "/documentation",
 });
 
+app.addHook("onRequest", (request, reply, done) => {
+  Log.GerarRequestLog(request);
+  done();
+});
+
 app.setErrorHandler((error, request, reply) => {
   const response: interfaceErrorResponse = {
     ok: false,
@@ -59,6 +65,8 @@ app.setErrorHandler((error, request, reply) => {
   });
 
   console.error("Stack trace:", error.stack);
+
+  Log.GerarErrorLog(request, error);
 });
 
 app.register(Router, { prefix: "/api/v1" });
