@@ -11,38 +11,8 @@ import { Calendar } from "primereact/calendar";
 import { useToast } from "@Context/toast/ToastContext";
 
 import { useVisitors } from "@Context/visitors/VisitorsContext";
+import { getVisitsByVisitorId } from "../../../../service/Visits";
 
-// SIMULAÇÃO: Função que busca o histórico de visitas de um visitante.
-// Substitua pela sua chamada de API real.
-const getVisitorHistory = async (visitorId) => {
-  console.log(`Buscando histórico para o visitante com ID: ${visitorId}`);
-  // Simula um delay da rede
-  await new Promise((resolve) => setTimeout(resolve, 500));
-
-  // Dados de exemplo
-  const mockHistory = [
-    {
-      id: 1,
-      subject: "Reunião com o Depto. Financeiro",
-      date: "2025-08-10T14:30:00Z",
-    },
-    {
-      id: 2,
-      subject: "Entrevista de emprego para vaga de Dev",
-      date: "2025-07-22T10:00:00Z",
-    },
-    {
-      id: 3,
-      subject: "Entrega de documento",
-      date: "2025-07-15T16:00:00Z",
-    },
-  ];
-
-  // Em um caso real, você retornaria o resultado da sua API
-  return mockHistory;
-};
-
-// NOVO: SIMULAÇÃO - Função para adicionar uma nova visita.
 const addVisitorHistory = async (visitorId, newVisit) => {
   console.log(`Salvando nova visita para o visitante ${visitorId}:`, newVisit);
   await new Promise((resolve) => setTimeout(resolve, 500));
@@ -79,23 +49,25 @@ const VisitorDetailsModal = ({ visible, setVisible }) => {
     setVisitorTarget(null); // Limpa o visitante alvo ao fechar
   };
 
+  const getVisitorHistory = async (visitorId) => {
+    console.log(`Buscando histórico para o visitante com ID: ${visitorId}`);
+    try {
+      const response = await getVisitsByVisitorId(visitorId);
+
+      setHistory(response.visits);
+      setLoading(false);
+    } catch (error) {
+      console.log("Erro ao buscar histórico do visitante");
+    } finally {
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
     if (visitorTarget) {
       setLoading(true);
-      getVisitorHistory(visitorTarget.id)
-        .then((data) => {
-          setHistory(data);
-        })
-        .catch((err) => console.error("Erro ao buscar histórico:", err))
-        .finally(() => {
-          setLoading(false);
-        });
+      getVisitorHistory(visitorTarget.uuid);
     }
-
-    return () => {
-      setHistory([]);
-      reset({ subject: "", date: null }); // Limpa o formulário ao fechar o modal principal
-    };
   }, [visitorTarget]);
 
   // NOVO: Função chamada ao submeter o formulário de nova visita

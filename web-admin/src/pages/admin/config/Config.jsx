@@ -2,6 +2,7 @@ import { useForm, Controller } from "react-hook-form";
 import { InputText } from "primereact/inputtext";
 import { Password } from "primereact/password";
 import { Button } from "primereact/button";
+import { Avatar } from "primereact/avatar";
 
 import { useProfile } from "@Context/profile/ProfileContext";
 import { useToast } from "@Context/toast/ToastContext";
@@ -48,7 +49,15 @@ const Config = () => {
   return (
     <div className="w-full bg-background rounded-md p-4 flex justify-center margin-auto">
       <div className="bg-white w-full max-w-120 rounded-md flex items-center flex-col p-8">
-        <div className="bg-white shadow-2xl h-30 w-30 sm:h-40 sm:w-40 rounded-full"></div>
+        <div className="bg-white shadow-2xl h-30 w-30 sm:h-40 sm:w-40 rounded-full">
+          <Avatar
+            shape="circle"
+            size="xlarge"
+            className="w-full h-full flex justify-center items-center"
+          >
+            <span className="text-5xl">U</span>
+          </Avatar>
+        </div>
         <Divider />
         <form
           onSubmit={handleSubmit(onSubmit)}
