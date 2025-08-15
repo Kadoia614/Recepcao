@@ -19,7 +19,19 @@ export const getVisitsByVisitorId = async (uuid) => {
     headers: { Authorization: localStorage.getItem("token") },
   });
 
-  alert(data);
+  return data;
+};
+
+export const addVisits = async (uuid, newVisit) => {
+  const url = `/visits`;
+
+  const { data } = await API.post(
+    url,
+    { ...newVisit, visitor_uuid: uuid },
+    {
+      headers: { Authorization: localStorage.getItem("token") },
+    }
+  );
 
   return data;
 };

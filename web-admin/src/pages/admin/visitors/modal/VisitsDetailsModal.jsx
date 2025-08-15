@@ -11,16 +11,14 @@ import { Calendar } from "primereact/calendar";
 import { useToast } from "@Context/toast/ToastContext";
 
 import { useVisitors } from "@Context/visitors/VisitorsContext";
-import { getVisitsByVisitorId } from "../../../../service/Visits";
+import { addVisits, getVisitsByVisitorId } from "../../../../service/Visits";
 
 const addVisitorHistory = async (visitorId, newVisit) => {
   console.log(`Salvando nova visita para o visitante ${visitorId}:`, newVisit);
-  await new Promise((resolve) => setTimeout(resolve, 500));
+  const response = await addVisits(visitorId, newVisit);
+
   // Em um caso real, a API retornaria o objeto salvo com um ID.
-  return {
-    id: Math.floor(Math.random() * 1000), // Gera um ID aleatório
-    ...newVisit,
-  };
+  return response;
 };
 
 const VisitorDetailsModal = ({ visible, setVisible }) => {
@@ -73,13 +71,13 @@ const VisitorDetailsModal = ({ visible, setVisible }) => {
   // NOVO: Função chamada ao submeter o formulário de nova visita
   const onSubmitNewVisit = async (formData) => {
     try {
-      const newVisit = await addVisitorHistory(visitorTarget.id, formData);
+      const newVisit = await addVisitorHistory(visitorTarget.uuid, formData);
       setHistory((prevHistory) => [...prevHistory, newVisit]); // Adiciona à tabela
       showToast("success", "Sucesso", "Nova visita registrada!");
       setIsAddModalVisible(false); // Fecha o modal de adição
       reset({ subject: "", date: null }); // Limpa o formulário
     } catch (error) {
-      showToast("error", "Erro", "Não foi possível registrar a visita.");
+      showToast("error", "Erro", "Não foi possível registrar a visita. ");
     }
   };
 
@@ -159,20 +157,22 @@ const VisitorDetailsModal = ({ visible, setVisible }) => {
             </div>
 
             {/* Tabela de Histórico */}
-            <DataTable
-              value={history}
-              loading={loading}
-              emptyMessage="No registers found."
-              className="p-datatable-sm"
-            >
-              <Column field="subject" header="Subject"></Column>
-              <Column
-                field="date"
-                header="Date and hour"
-                body={formatDate}
-                style={{ width: "180px" }}
-              ></Column>
-            </DataTable>
+            <div className="max-h-[300px] overflow-y-scroll">
+              <DataTable
+                value={history}
+                loading={loading}
+                emptyMessage="No registers found."
+                className="p-datatable-sm"
+              >
+                <Column field="subject" header="Subject"></Column>
+                <Column
+                  field="date"
+                  header="Date and hour"
+                  body={formatDate}
+                  style={{ width: "180px" }}
+                ></Column>
+              </DataTable>
+            </div>
           </div>
         )}
       </Dialog>
