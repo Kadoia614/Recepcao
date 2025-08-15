@@ -3,6 +3,7 @@ import { loginController } from "../controller/auth/loginController.js";
 import { ValidateTokenController } from "../controller/auth/validateTokenController.js";
 import { AlterPwdController } from "../controller/auth/alterpwdController.js";
 import { authJWT } from "../middleware/authJWT.js";
+import fastifyRateLimit from "@fastify/rate-limit";
 
 export async function loginRouter(app: FastifyInstance) {
   app.route({

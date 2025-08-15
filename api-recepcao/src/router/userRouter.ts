@@ -49,13 +49,13 @@ const responseUserSchema = {
 };
 
 export async function userRouter(app: FastifyInstance) {
-  // if (APPLICATION_ENVORIMENT != "dev") {
-  //   app.addHook("preHandler", authJWT);
-  //   app.addHook("preHandler", checkPermissions);
-  // }
+  if (APPLICATION_ENVORIMENT != "dev") {
+    app.addHook("preHandler", authJWT);
+    app.addHook("preHandler", checkPermissions);
+  }
 
-  app.addHook("preHandler", authJWT);
-  app.addHook("preHandler", checkPermissions);
+  // app.addHook("preHandler", authJWT);
+  // app.addHook("preHandler", checkPermissions);
 
   app.route({
     method: "POST",
