@@ -135,7 +135,7 @@ const VisitorsView = ({
       <div className="p-inputgroup flex-1 pb-4">
         <InputText
           type="search"
-          placeholder="Pesquisar por nome, CPF ou sobrenome"
+          placeholder="Search by name"
           value={query.search || ""}
           onChange={(e) =>
             setQuery((prev) => ({
@@ -155,14 +155,14 @@ const VisitorsView = ({
         end={
           <div className="md:flex items-center gap-2">
             <Button
-              label="Novo visitante"
+              label="New Visitor"
               icon="pi pi-user-plus"
               className="btn-primary"
               onClick={() => setEditIsVisible(true)}
             />
           </div>
         }
-        center={<h2 className="text-2xl font-bold">Visitantes</h2>}
+        center={<h2 className="text-2xl font-bold">Visitors</h2>}
         start={
           <div className="flex items-center gap-4">
             <span>Total de Visitantes: {totalVisitor}</span>

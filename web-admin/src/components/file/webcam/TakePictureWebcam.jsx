@@ -7,7 +7,6 @@ function MyWebcamComponent() {
   const capture = useCallback(() => {
     const imageSrc = webcamRef.current.getScreenshot();
     // Do something with the imageSrc (e.g., display it, send to server)
-    console.log(imageSrc);
   }, [webcamRef]);
 
   return (

@@ -10,7 +10,7 @@ export interface VisitsRequired {
   creator_uuid: string;
   visitor_uuid: string;
   subject: string;
-  date: Date;
+  date: string;
 }
 
 export interface VisitsWithAssociation extends VisitsDB {

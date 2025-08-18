@@ -11,6 +11,7 @@ export const getVisits = async (
   reply: FastifyReply
 ) => {
   const query = request.query;
+  console.log(query.search);
 
   try {
     const response = await VisitsService.listVisits(query);
@@ -22,12 +23,6 @@ export const getVisits = async (
         message: response.message || "Erro ao listar visitantes",
       };
     }
-
-    console.log({
-      message: response.message,
-      visits: response.visits,
-      count: response.count,
-    });
 
     reply.status(200).send({
       message: response.message,
@@ -49,8 +44,6 @@ export const getVisitsByVisitorId = async (
 ) => {
   const { uuid } = request.params;
 
-  console.log(uuid);
-
   try {
     const response = await VisitsService.listVisitsByVisitorId(uuid);
 
@@ -61,11 +54,6 @@ export const getVisitsByVisitorId = async (
         message: response.message || "Erro ao listar visitantes",
       };
     }
-
-    console.log({
-      message: response.message,
-      visits: response.visits,
-    });
 
     reply.status(200).send({
       message: response.message,
@@ -86,11 +74,13 @@ export const postVisits = async (
 ) => {
   const { visitor_uuid, subject, date } = request.body;
 
+  const formated_date = date.replace("T", " ");
+
   const payload = {
     creator_uuid: request.user.uuid,
     visitor_uuid,
     subject,
-    date,
+    date: formated_date,
   };
 
   const newVisit = await VisitsService.createVisits(payload);

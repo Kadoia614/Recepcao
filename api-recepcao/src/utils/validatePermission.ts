@@ -87,7 +87,6 @@ export function validatePermission(
   invalidFields?: string[];
   message: string;
 } {
-  console.log(data, role, method, module);
   if (!role || !method || !module)
     return { ok: false, message: "Missing required" };
 

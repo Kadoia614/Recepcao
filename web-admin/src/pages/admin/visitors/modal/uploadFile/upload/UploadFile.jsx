@@ -14,7 +14,6 @@ export default function UploadFile({ setPhotoBase64, photo }) {
   const captureFromWebcam = useCallback(() => {
     const imageSrc = webcamRef.current.getScreenshot();
     setPhotoBase64(imageSrc);
-    console.log(imageSrc)
     setShowWebcam(false);
   }, [webcamRef]);
 

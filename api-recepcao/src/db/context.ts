@@ -13,6 +13,7 @@ export const sequelize = new Sequelize(
   {
     host: DATABASE_HOST,
     dialect: "mariadb",
+    logging: false,
   }
 );
 

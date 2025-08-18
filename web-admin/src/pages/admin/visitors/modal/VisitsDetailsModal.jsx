@@ -222,10 +222,14 @@ const VisitorDetailsModal = ({ visible, setVisible }) => {
                 <Calendar
                   id={field.name}
                   value={field.value}
-                  onChange={(e) => field.onChange(e.value)}
+                  onChange={(e) => {
+                    field.onChange(e.value);
+                    alert(e.value);
+                  }}
                   showTime
                   hourFormat="24"
                   className={fieldState.error ? "p-invalid" : ""}
+                  dateFormat="dd/mm/yy"
                 />
               )}
             />

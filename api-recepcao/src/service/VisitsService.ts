@@ -27,7 +27,7 @@ export class VisitsService {
 
     const where = search
       ? {
-          [Op.or]: [{ date: { [Op.like]: `%${search}%` } }],
+          [Op.or]: [{ date: { [Op.like]: `%${search.split("T")[0]}%` } }],
         }
       : {};
 

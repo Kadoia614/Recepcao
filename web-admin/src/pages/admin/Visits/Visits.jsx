@@ -1,34 +1,34 @@
-import { useState, useEffect } from "react";
-// import { Card } from "@/components/ui/card";
-// import { Table } from "primereact/table";
+import { useState, useEffect, useRef } from "react";
 import { DataTable } from "primereact/datatable";
 import TableHeader from "../../../components/table/TableHeader";
 
 import { Column } from "primereact/column";
 import { Avatar } from "primereact/avatar";
-import { Tag } from "primereact/tag";
 import { format } from "date-fns";
 import { InputText } from "primereact/inputtext";
 import { Calendar } from "primereact/calendar";
 import { getVisits } from "../../../service/Visits";
 import { Paginator } from "primereact/paginator";
+import { Button } from "primereact/button";
 
 export default function VisitsTable() {
+  const calendarRef = useRef(null);
   const [query, setQuery] = useState({
     page: 0,
     limit: 10,
     search: null,
   });
   const [data, setData] = useState([]);
+  const [dateFilter, setDateFilter] = useState(null);
 
   const fetchData = async () => {
-    const response = await getVisits();
+    const response = await getVisits(query.page, query.limit, query.search);
     setData(response);
   };
 
   useEffect(() => {
     fetchData();
-  }, []);
+  }, [query]);
 
   return (
     <section>
@@ -36,26 +36,29 @@ export default function VisitsTable() {
         start={<h3 className="text-3xl">Visits</h3>}
         end={
           <div className="flex gap-4 items-end">
-            <span>
-              <InputText
-                placeholder="Buscar por visitante, assunto ou criador"
-                value={query.search}
-                onChange={(e) =>
-                  setQuery((prev) => ({
-                    ...prev,
-                    search: e.target.value,
-                    page: 0,
-                  }))
+            <Button
+              icon="pi pi-calendar"
+              className="p-button-outlined"
+              onClick={() => {
+                if (calendarRef.current) {
+                  calendarRef.current.show();
                 }
-                className="w-80"
-              />
-            </span>
-            {/* <Calendar
-              value={dateFilter}
-              onChange={(e) => setDateFilter(e.value)}
+              }}
+            />
+            <Calendar
+              ref={calendarRef}
+              onChange={(e) => {
+                setQuery((prev) => ({
+                  ...prev,
+                  page: 0,
+                  search: e.value,
+                }));
+              }}
               dateFormat="dd/mm/yy"
-              placeholder="Filter by Date"
-            /> */}
+              className="w-80"
+              placeholder="Buscar por visitante, assunto ou criador"
+              manualInput
+            />
           </div>
         }
       />
@@ -101,17 +104,17 @@ export default function VisitsTable() {
           />
           <Column
             field="createdAt"
-            header="Hora"
+            header="Date and Hour"
             body={(rowData) => (
-              <span>{format(rowData.createdAt, "dd/MM/yyyy HH:mm")}</span>
+              <span>{format(rowData.date, "dd/MM/yyyy HH:mm")}</span>
             )}
           />
         </DataTable>
         <Paginator
           first={query.page}
           rows={query.limit}
-          totalRecords={data.counts}
-          rowsPerPageOptions={[10, 20, 30]}
+          totalRecords={data.count}
+          rowsPerPageOptions={[1, 10, 20, 30]}
           onPageChange={(e) =>
             setQuery((prev) => ({
               ...prev,
