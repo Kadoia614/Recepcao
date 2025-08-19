@@ -1,8 +1,15 @@
 import API from "@API/API";
 
+function formatDateToQuery(date) {
+  return date.toISOString().split("T")[0]; // "2025-08-18"
+}
+
 export const getVisits = async (page, limit, search) => {
+  console.log(page, limit, search);
+  const formattedDate = search ? formatDateToQuery(search) : null;
+
   const url = search
-    ? `/visits?page=${page || 0}&limit=${limit || 10}&search=${search}`
+    ? `/visits?page=${page || 0}&limit=${limit || 10}&search=${formattedDate}`
     : `/visits?page=${page || 0}&limit=${limit || 10}`;
 
   const { data } = await API.get(url, {
