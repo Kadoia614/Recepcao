@@ -11,7 +11,6 @@ export const getVisits = async (
   reply: FastifyReply
 ) => {
   const query = request.query;
-  console.log(query.search);
 
   try {
     const response = await VisitsService.listVisits(query);

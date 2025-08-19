@@ -7,7 +7,7 @@ import Admin from "./pages/Admin";
 import Visitors from "./pages/admin/visitors/Visitors";
 import Users from "./pages/admin/users/Users";
 // import Calendar from "./pages/admin/calendar/Calendar";
-import Config from "./pages/admin/config/Config"
+import Config from "./pages/admin/config/Config";
 
 import Footer from "./pages/footer/Footer";
 
@@ -19,10 +19,14 @@ import { useThemeContext } from "@/context/theme/ThemeContext";
 import Singout from "./pages/Singout";
 import { useLoading } from "./context/loading/LoadingContext";
 import VisitsByDayTable from "./pages/admin/Visits/Visits";
+import { useProfile } from "./context/profile/ProfileContext";
+import Terms from "./pages/terms/Terms";
+import PrivacyPolicy from "./pages/terms/PrivacityPolicy";
 
 function App() {
   const { theme } = useThemeContext();
-  const { loading } = useLoading
+  const { loading } = useLoading;
+  const { user } = useProfile();
   return (
     <div
       id="App"
@@ -30,11 +34,7 @@ function App() {
       className="min-h-full flex flex-col text-gray-500 dark:text-gray-400"
     >
       <div id="Main" className="h-full overflow-scroll">
-        <div className="absolute left-2 bottom-2">
-          <h1>Your theme: {theme}</h1>
-        </div>
         <Router>
-          
           {loading && <Loading></Loading>}
           <Nav />
           <Routes>
@@ -51,6 +51,8 @@ function App() {
 
               <Route path="/Singout" element={<Singout />} />
             </Route>
+            <Route path="/Terms" element={<Terms />}></Route>
+            <Route path="/Privacity" element={<PrivacyPolicy />}></Route>
 
             <Route
               path="*"

@@ -3,30 +3,29 @@ import PropTypes from "prop-types";
 
 import { Toolbar } from "primereact/toolbar";
 
-const TableHeader = ({start, center, end}) => {
-  const startContent = (
-    <Fragment>
-      {start}
-    </Fragment>
-  );
+const TableHeader = ({ start, center, end }) => {
+  const startContent = <Fragment>{start}</Fragment>;
 
-  const centerContent = (
-    <Fragment>
-      {center}
-    </Fragment>
-  );
+  const centerContent = <Fragment>{center}</Fragment>;
 
   const endContent = (
     <Fragment>
-      <div className="flex justify-end gap-4 items-center relative">
-      {end}
-      </div>
+      <div className="flex justify-end gap-4 items-center relative">{end}</div>
     </Fragment>
   );
 
   return (
     <div className="relative header-table">
-      <Toolbar start={startContent} center={centerContent} end={endContent} className="bg-background dark:border-none" />
+      <Toolbar
+        start={startContent}
+        center={centerContent}
+        end={endContent}
+        className="bg-background dark:border-none"
+        pt={{
+          root: { className: "relative " },
+          center: { className: "absolute left-[50%] translate-x-[-50%]" },
+        }}
+      />
     </div>
   );
 };

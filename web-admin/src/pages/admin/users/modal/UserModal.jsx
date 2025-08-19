@@ -12,14 +12,13 @@ import { useEffect } from "react";
 const rolesOption = [
   { label: "Admin", value: "admin" },
   { label: "User", value: "user" },
-  { label: "Recepcionist", value: "recepcionist" },
   { label: "Superadmin", value: "superadmin" },
 ];
 
 const UserModal = ({ visible, onHide }) => {
   const { showToast } = useToast();
   const { addUsers, userTarget, setUserTarget, updateUsers } = useUsers();
-  
+
   const {
     register,
     control,
@@ -136,7 +135,7 @@ const UserModal = ({ visible, onHide }) => {
                 className={errors.role ? "p-invalid" : ""}
                 onChange={(e) => field.onChange(e.value)}
                 value={field.value}
-              />  
+              />
             )}
           />
           {errors.role && (
@@ -156,15 +155,13 @@ const UserModal = ({ visible, onHide }) => {
           )}
         </div>
 
-
-
         {/* CPF */}
         <div>
           <label className="font-medium">CPF</label>
           <Controller
             name="cpf"
             control={control}
-            rules={{ required: !userTarget ? "Mandatory" : false}}
+            rules={{ required: !userTarget ? "Mandatory" : false }}
             render={({ field }) => (
               <InputMask
                 {...field}

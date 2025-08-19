@@ -66,7 +66,11 @@ export class Log {
         try {
           logs = JSON.parse(data);
         } catch (parseErr) {
-          console.error("Erro ao parsear o arquivo de log:", parseErr);
+          console.error(
+            "Erro ao parsear o arquivo de log no path: ",
+            path,
+            parseErr
+          );
         }
       }
 

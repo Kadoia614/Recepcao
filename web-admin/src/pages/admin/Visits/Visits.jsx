@@ -59,6 +59,13 @@ export default function VisitsTable() {
               placeholder="Buscar por visitante, assunto ou criador"
               manualInput
             />
+            <Button
+              icon="pi pi-times"
+              className="p-button-outlined"
+              onClick={() => {
+                setQuery((prev) => ({ ...prev, search: null }));
+              }}
+            />
           </div>
         }
       />

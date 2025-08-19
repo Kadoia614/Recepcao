@@ -10,36 +10,33 @@ import { PORT } from "./config/env.js";
 import { interfaceErrorResponse } from "./types/errorTypes.js";
 
 import "./db/model/association.js";
-import { Log } from "./utils/GerarLog.js";
 
-const app =
-  fastify();
-  //   {
-  //   logger: {
-  //     level: "info",
-  //     file: "./log/test.json", // Will use pino.destination()
-  //     serializers: {
-  //       res(res) {
-  //         // The default
-  //         return {
-  //           statusCode: res.statusCode,
-  //         };
-  //       },
-  //       req(req) {
-  //         return {
-  //           method: req.method,
-  //           url: req.url,
-  //           parameters: req.params,
-  //           // Including the headers in the log could be in violation
-  //           // of privacy laws, e.g. GDPR. You should use the "redact" option to
-  //           // remove sensitive fields. It could also leak authentication data in
-  //           // the logs.
-  //           // headers: req.headers,
-  //         };
-  //       },
-  //     },
-  //   },
-  // }
+const app = fastify({
+  logger: {
+    level: "info",
+    file: "./log/log.json", // Will use pino.destination()
+    serializers: {
+      res(res) {
+        // The default
+        return {
+          statusCode: res.statusCode,
+        };
+      },
+      req(req) {
+        return {
+          method: req.method,
+          url: req.url,
+          parameters: req.params,
+          // Including the headers in the log could be in violation
+          // of privacy laws, e.g. GDPR. You should use the "redact" option to
+          // remove sensitive fields. It could also leak authentication data in
+          // the logs.
+          headers: req.headers,
+        };
+      },
+    },
+  },
+});
 
 app.register(fastifyCors, { origin: "*" });
 
@@ -65,7 +62,6 @@ app.register(fastifySwaggerUi, {
 });
 
 app.addHook("onRequest", (request, reply, done) => {
-  Log.GerarRequestLog(request);
   done();
 });
 
@@ -92,8 +88,6 @@ app.setErrorHandler((error, request, reply) => {
   });
 
   console.error("Stack trace:", error.stack);
-
-  Log.GerarErrorLog(request, error);
 });
 
 app.register(Router, { prefix: "/api/v1" });

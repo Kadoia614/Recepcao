@@ -84,7 +84,7 @@ const UserTable = ({ setEditIsVisible, setExcludeIsVisible }) => {
       <div className="p-inputgroup flex-1 pb-4">
         <InputText
           type="search"
-          placeholder="Search for name"
+          placeholder="Search by name"
           value={query.search || ""}
           onChange={(e) =>
             setQuery((prev) => ({
