@@ -30,10 +30,10 @@ Authorization: Bearer seu_token_jwt_aqui
 
 ### Índice
 
-1.  [Login](https://www.google.com/search?q=%23login)
-2.  [User (Usuário)](https://www.google.com/search?q=%23user-usu%C3%A1rio)
-3.  [Visitor (Visitante)](https://www.google.com/search?q=%23visitor-visitante)
-4.  [Visits (Visitas)](https://www.google.com/search?q=%23visits-visitas)
+1.  [Login]
+2.  [User (Usuário)]
+3.  [Visitor (Visitante)]
+4.  [Visits (Visitas)]
 
 ---
 
