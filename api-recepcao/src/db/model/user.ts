@@ -21,7 +21,7 @@ export class UserDB extends Model<
   declare cpf: string;
   declare password: string;
   declare role: "admin" | "user" | "recepcionist" | "superadmin";
-  
+
   declare firstLogin: CreationOptional<boolean>;
   declare createdAt: CreationOptional<Date>;
   declare updatedAt: CreationOptional<Date>;
@@ -76,9 +76,8 @@ UserDB.init(
   {
     sequelize,
     modelName: "User",
-    tableName: "Users",
+    tableName: "users",
     timestamps: true, // cria createdAt/updatedAt
     paranoid: true, // cria deletedAt
   }
 );
-

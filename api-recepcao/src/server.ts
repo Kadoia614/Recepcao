@@ -14,7 +14,7 @@ import "./db/model/association.js";
 const app = fastify({
   logger: {
     level: "info",
-    file: "./log/log.json", // Will use pino.destination()
+    file: "./log.json", // Will use pino.destination()
     serializers: {
       res(res) {
         // The default

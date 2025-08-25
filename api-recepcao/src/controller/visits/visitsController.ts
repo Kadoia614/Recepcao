@@ -4,7 +4,7 @@ import {
   VisitsQueryParams,
   VisitsRequired,
 } from "../../types/visitsTypes.js";
-import { VisitsService } from "../../service/visitsService.js";
+import { VisitsService } from "../../service/VisitsService.js";
 
 export const getVisits = async (
   request: FastifyRequest<{ Querystring: VisitsQueryParams }>,
@@ -74,6 +74,14 @@ export const postVisits = async (
   const { visitor_uuid, subject, date } = request.body;
 
   const formated_date = date.replace("T", " ");
+
+  if (!request.user || !request.user.uuid) {
+    throw {
+      code: 401,
+      message: "Usuário não autenticado",
+      ok: false,
+    };
+  }
 
   const payload = {
     creator_uuid: request.user.uuid,

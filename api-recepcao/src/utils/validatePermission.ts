@@ -26,19 +26,19 @@ const EditableFields = {
 
 const MethodesPermissions = {
   user: {
-    admin: ["GET", "POST"],
-    superadmin: ["GET", "POST", "PUT", "DELETE"],
-    user: [],
+    admin: ["GET", "POST"] as string[],
+    superadmin: ["GET", "POST", "PUT", "DELETE"] as string[],
+    user: [] as string[],
   },
   visitors: {
-    admin: ["GET", "POST", "PUT"],
-    superadmin: ["GET", "POST", "PUT", "DELETE"],
-    user: ["GET", "POST", "PUT"],
+    admin: ["GET", "POST", "PUT"] as string[],
+    superadmin: ["GET", "POST", "PUT", "DELETE"] as string[],
+    user: ["GET", "POST", "PUT"] as string[],
   },
   visits: {
-    admin: ["GET", "POST"],
-    superadmin: ["GET", "POST", "PUT", "DELETE"],
-    user: ["GET", "POST"],
+    admin: ["GET", "POST"] as string[],
+    superadmin: ["GET", "POST", "PUT", "DELETE"] as string[],
+    user: ["GET", "POST"] as string[],
   },
 };
 
@@ -98,7 +98,7 @@ export function validatePermission(
     };
   }
 
-  if (["PUT"].includes(method.toUpperCase()) && module === "visitor") {
+  if (["PUT"].includes(method.toUpperCase()) && module === "visitors") {
     const fieldValidation = validateFields(data, role);
     if (!fieldValidation.ok) {
       return {

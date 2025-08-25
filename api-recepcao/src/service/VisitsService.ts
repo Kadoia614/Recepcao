@@ -4,6 +4,8 @@ import {
   VisitsGenericResponse,
   VisitsQueryParams,
   VisitsRequired,
+  VisitsWithAssociation,
+  VisitsResponse,
 } from "../types/visitsTypes.js";
 import { Visits } from "../db/model/visits.js";
 import { Visitors } from "../db/model/visitors.js";
@@ -13,7 +15,10 @@ import { ok } from "assert";
 export class VisitsService {
   static async listVisits(
     query: VisitsQueryParams
-  ): Promise<GetVisitsResponse> {
+  ): Promise<
+    | { ok: true; message: string; visits: VisitsResponse[]; count: number }
+    | { ok: false; code: number; message: string }
+  > {
     const {
       page = "0",
       limit = "10",
@@ -42,8 +47,8 @@ export class VisitsService {
       order: [["createdAt", "DESC"]],
     });
 
-    const visits = rows.map((visit) => {
-      const v = visit.toJSON();
+    const visits: VisitsResponse[] = rows.map((visit) => {
+      const v = visit.toJSON() as VisitsWithAssociation;
 
       return {
         uuid: v.uuid,
@@ -67,11 +72,17 @@ export class VisitsService {
       };
     });
 
+    if (!rows.length) {
+      return {
+        ok: false,
+        code: 404,
+        message: "No visits found",
+      };
+    }
+
     return {
       ok: true,
-      message: visits.length
-        ? "Visits successfully listed"
-        : "Anyone visit found",
+      message: "Visits successfully listed",
       visits,
       count,
     };
@@ -100,18 +111,63 @@ export class VisitsService {
     };
   }
 
-  static async listVisitsByVisitorId(
-    uuid: string
-  ): Promise<VisitsGenericResponse> {
+  static async listVisitsByVisitorId(uuid: string): Promise<
+    | {
+        ok: true;
+        visits: VisitsResponse[];
+        message: string;
+      }
+    | {
+        ok: false;
+        code: number;
+        message: string;
+      }
+  > {
     const visits = await Visits.findAll({
       where: { visitor_uuid: uuid },
       order: [["createdAt", "DESC"]],
+      include: [
+        { model: UserDB, as: "Creator" },
+        { model: Visitors, as: "Visitor" },
+      ],
+    });
+
+    if (!visits.length) {
+      return {
+        ok: false,
+        code: 404,
+        message: "No visits found for the given visitor ID",
+      };
+    }
+
+    const visitsResponse: VisitsResponse[] = visits.map((visit) => {
+      const v = visit.toJSON() as VisitsWithAssociation;
+      return {
+        uuid: v.uuid,
+        creator_uuid: v.creator_uuid,
+        creator: {
+          uuid: v.Creator?.uuid,
+          role: v.Creator?.role,
+          username: v.Creator?.username,
+        },
+        visitor_uuid: v.visitor_uuid,
+        visitor: {
+          uuid: v.Visitor?.uuid,
+          name: v.Visitor?.name,
+          photo: v.Visitor?.photo ?? null,
+        },
+        subject: v.subject,
+        date: v.date,
+        createdAt: v.createdAt,
+        updatedAt: v.updatedAt,
+        deletedAt: v.deletedAt,
+      };
     });
 
     return {
       ok: true,
-      visits: visits,
-      message: visits ? "Visits found" : "Anyone visit found",
+      visits: visitsResponse,
+      message: "Visits found",
     };
   }
 }

@@ -1,10 +1,10 @@
 {
-  "name": "api-rooms",
+  "name": "api-recepcao",
   "version": "1.0.0",
-  "description": "api to manager rooms",
+  "description": "api to manager visits into prefeitura",
   "keywords": [
     "api",
-    "rooms",
+    "management",
     "fastify",
     "sequelize"
   ],

@@ -88,7 +88,6 @@ Visitors.init(
   {
     sequelize,
     modelName: "Visitors",
-    tableName: "Visitors",
+    tableName: "visitors",
   }
 );
-

@@ -6,6 +6,8 @@ import {
   CreationOptional,
 } from "sequelize";
 import { sequelize } from "../context.js";
+import { UserDB } from "./user.js";
+import { Visitors } from "./visitors.js";
 
 export class Visits extends Model<
   InferAttributes<Visits>,
@@ -71,6 +73,16 @@ Visits.init(
   {
     sequelize,
     modelName: "Visits",
-    tableName: "Visits",
+    tableName: "visits",
   }
 );
+
+Visits.belongsTo(UserDB, {
+  foreignKey: "creator_uuid",
+  as: "Creator",
+});
+
+Visits.belongsTo(Visitors, {
+  foreignKey: "visitor_uuid",
+  as: "Visitor",
+});

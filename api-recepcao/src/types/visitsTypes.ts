@@ -55,3 +55,24 @@ export type VisitsQueryParams = {
   page?: string;
   limit: string;
 };
+
+export interface VisitsResponse {
+  uuid: string;
+  creator_uuid: string;
+  creator: {
+    uuid: string | undefined;
+    role: "admin" | "user" | "recepcionist" | "superadmin" | undefined;
+    username: string | undefined;
+  };
+  visitor_uuid: string;
+  visitor: {
+    uuid: string | undefined;
+    name: string | undefined;
+    photo: string | null;
+  };
+  subject: string;
+  date: string;
+  createdAt: Date;
+  updatedAt: Date;
+  deletedAt: Date | null;
+}

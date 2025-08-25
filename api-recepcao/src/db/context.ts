@@ -1,21 +1,7 @@
 import { Sequelize } from "sequelize";
-import {
-  DATABASE_USER,
-  DATABASE_KEY,
-  DATABASE_NAME,
-  DATABASE_HOST,
-} from "../config/env.js";
+import { DATABASE_URL } from "../config/env.js";
 
-export const sequelize = new Sequelize(
-  DATABASE_NAME,
-  DATABASE_USER,
-  DATABASE_KEY,
-  {
-    host: DATABASE_HOST,
-    dialect: "mariadb",
-    logging: false,
-  }
-);
+export const sequelize = new Sequelize(DATABASE_URL);
 
 (async () => {
   try {
