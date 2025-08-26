@@ -4,9 +4,18 @@ services:
       context: ./api-recepcao
       dockerfile: Dockerfile
     environment:
-      - NODE_ENV=production
-    env_file:
-      - .env
+      NODE_ENV: ${NODE_ENV}
+      APPLICATION_PORT: ${APPLICATION_PORT}
+      SECRET_KEY_JWT: ${SECRET_KEY_JWT}
+      DATABASE_USER: ${DATABASE_USER}
+      DATABASE_KEY: ${DATABASE_KEY}
+      DATABASE_NAME: ${DATABASE_NAME}
+      DATABASE_HOST: ${DATABASE_HOST}
+      DATABASE_URL: ${DATABASE_URL}
+      SECRET_EMAIL: ${SECRET_EMAIL}
+      SECRET_PASSWORD: ${SECRET_PASSWORD}
+    depends_on:
+      - db
 
   frontend:
     build:
@@ -16,5 +25,20 @@ services:
       - "81:80"
     depends_on:
       - api
-    env_file:
-      - .env
+    environment:
+      NODE_ENV: ${NODE_ENV}
+      REACT_APP_API_URL: ${REACT_APP_API_URL}
+
+  db:
+    image: mariadb:latest
+    container_name: recepcao_db
+    environment:
+      MYSQL_USER: root
+      MYSQL_PASSWORD: kadoia
+      MYSQL_ROOT_PASSWORD: kadoia
+      MYSQL_DATABASE: recepcao
+    volumes:
+      - db_data:/var/lib/mysql
+
+volumes:
+  db_data:
