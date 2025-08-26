@@ -28,6 +28,7 @@ services:
     environment:
       NODE_ENV: ${NODE_ENV}
       REACT_APP_API_URL: ${REACT_APP_API_URL}
+      VITE_API_URL: ${REACT_APP_API_URL}
 
   db:
     image: mariadb:latest
