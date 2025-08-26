@@ -33,10 +33,10 @@ services:
     image: mariadb:latest
     container_name: recepcao_db
     environment:
-      MYSQL_USER: root
-      MYSQL_PASSWORD: kadoia
-      MYSQL_ROOT_PASSWORD: kadoia
-      MYSQL_DATABASE: recepcao
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
     volumes:
       - db_data:/var/lib/mysql
 
