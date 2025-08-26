@@ -9,8 +9,6 @@ services:
       MARIADB_PASSWORD: ${MYSQL_PASSWORD}
       MARIADB_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
       MARIADB_DATABASE: ${MYSQL_DATABASE}
-    ports:
-      - "3001:3001"
     volumes:
       - db_data:/var/lib/mysql
     healthcheck:
@@ -39,6 +37,8 @@ services:
       DATABASE_URL: ${DATABASE_URL}
       SECRET_EMAIL: ${SECRET_EMAIL}
       SECRET_PASSWORD: ${SECRET_PASSWORD}
+    ports:
+      - "3001:3001"
     depends_on:
       db:
         condition: service_healthy
