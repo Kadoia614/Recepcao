@@ -1,5 +1,6 @@
 services:
   api:
+    container_name: recepcao_api
     build:
       context: ./api-recepcao
       dockerfile: Dockerfile
@@ -18,16 +19,19 @@ services:
       - db
 
   frontend:
+    container_name: recepcao_frontend
     build:
       context: ./web-admin
       dockerfile: Dockerfile
+      args:
+        VITE_API_URL: ${VITE_API_URL}
     ports:
       - "81:80"
     depends_on:
       - api
+
     environment:
       NODE_ENV: ${NODE_ENV}
-      VITE_API_URL: ${VITE_API_URL}
 
   db:
     image: mariadb:latest
