@@ -1,4 +1,15 @@
 services:
+  db:
+    image: mariadb:latest
+    container_name: recepcao_db
+    environment:
+      MARIADB_USER: ${MYSQL_USER}
+      MARIADB_PASSWORD: ${MYSQL_PASSWORD}
+      MARIADB_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MARIADB_DATABASE: ${MYSQL_DATABASE}
+    volumes:
+      - db_data:/var/lib/mysql
+
   api:
     container_name: recepcao_api
     build:
@@ -32,17 +43,6 @@ services:
 
     environment:
       NODE_ENV: ${NODE_ENV}
-
-  db:
-    image: mariadb:latest
-    container_name: recepcao_db
-    environment:
-      MARIADB_USER: ${MYSQL_USER}
-      MARIADB_PASSWORD: ${MYSQL_PASSWORD}
-      MARIADB_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
-      MARIADB_DATABASE: ${MYSQL_DATABASE}
-    volumes:
-      - db_data:/var/lib/mysql
 
 volumes:
   db_data:
