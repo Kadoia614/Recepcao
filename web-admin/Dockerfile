@@ -9,9 +9,15 @@ RUN npm run build
 
 # Etapa 2: servir com Nginx
 FROM nginx:alpine
+WORKDIR /usr/share/nginx/html
 
-COPY --from=builder /app/dist /usr/share/nginx/html
+# Copiar os arquivos necessários do builder
+COPY --from=builder /app/dist .
+COPY --from=builder /app/node_modules ./node_modules
 COPY ./nginx/nginx.conf /etc/nginx/conf.d/default.conf
+
+# Adicionar o .env para o container
+COPY .env .
 
 EXPOSE 80
 
