@@ -16,8 +16,6 @@ COPY --from=builder /app/dist .
 COPY --from=builder /app/node_modules ./node_modules
 COPY ./nginx/nginx.conf /etc/nginx/conf.d/default.conf
 
-# Adicionar o .env para o container
-COPY .env .
 
 EXPOSE 80
 
