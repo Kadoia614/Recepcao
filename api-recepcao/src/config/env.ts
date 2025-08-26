@@ -12,7 +12,7 @@ function must(name: string): string {
   return val;
 }
 
-export const APPLICATION_ENVORIMENT = must("APPLICATION_ENVORIMENT");
+export const APPLICATION_ENVORIMENT = must("NODE_ENV");
 
 export const PORT = must("APPLICATION_PORT");
 

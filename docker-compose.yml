@@ -1,0 +1,35 @@
+version: "3.8"
+
+services:
+  api:
+    build:
+      context: ./api-recepcao
+      dockerfile: Dockerfile
+    environment:
+      - NODE_ENV=production
+    depends_on:
+      - db
+
+  frontend:
+    build:
+      context: ./web-admin
+      dockerfile: Dockerfile
+    ports:
+      - "81:80"
+    depends_on:
+      - api
+
+  db:
+    image: mariadb:latest
+    container_name: recepcao_db
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: kadoia
+      POSTGRES_DB: recepcao
+    volumes:
+      - db_data:/var/lib/mysql
+
+volumes:
+  db_data:
