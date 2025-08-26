@@ -5,6 +5,8 @@ services:
       dockerfile: Dockerfile
     environment:
       - NODE_ENV=production
+    env_file:
+      - .env
 
   frontend:
     build:
@@ -14,3 +16,5 @@ services:
       - "81:80"
     depends_on:
       - api
+    env_file:
+      - .env
