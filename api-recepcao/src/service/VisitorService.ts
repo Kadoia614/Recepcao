@@ -7,6 +7,18 @@ import {
   VisitorsParams,
   VisitorsRequired,
 } from "../types/visitorTypes.js";
+import validatorCPF from "../utils/validatorCPF.js";
+
+const isDuplicateUser = async (cpf?: string | null, excludeUuid?: string) => {
+  const where: any = {
+    [Op.or]: [{ cpf }],
+  };
+  // to update user or visitor
+  if (excludeUuid) {
+    where.uuid = { [Op.ne]: excludeUuid };
+  }
+  return await Visitors.findOne({ where });
+};
 
 export class VisitorsService {
   static async listVisitors(
@@ -83,6 +95,24 @@ export class VisitorsService {
   static async createVisitor(
     visitorData: VisitorsRequired
   ): Promise<VisitorsGenericResponse> {
+    const cpfValidation = validatorCPF(visitorData.cpf);
+    if (!cpfValidation.ok) {
+      throw {
+        ok: false,
+        code: 403,
+        message: "CPF inválido",
+      };
+    }
+
+    // Verifica duplicidade
+    if (await isDuplicateUser(visitorData.cpf)) {
+      throw {
+        ok: false,
+        code: 403,
+        message: "Visitante Já existe",
+      };
+    }
+
     const newVisitor = await Visitors.create(visitorData);
     return {
       ok: true,

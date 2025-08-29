@@ -30,18 +30,16 @@ const VisitorsModal = ({ visible, onHide }) => {
     reset,
     setValue,
   } = useForm({
-    defaultValues: {
-      uuid: null,
-      name: "",
-      cpf: "",
-      photo: "",
-      email: "",
-      phone: "",
-      address: "",
-      city: "",
-      state: "",
-      zipCode: "",
-    },
+    uuid: null,
+    name: null,
+    cpf: null,
+    photo: "",
+    email: "",
+    phone: "",
+    address: "",
+    city: "",
+    state: "",
+    zipCode: "",
   });
 
   // Preenche formulário em caso de edição

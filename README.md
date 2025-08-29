@@ -101,7 +101,7 @@ export default defineConfig({
 
 **Versão: 1.0.0**
 
-Este documento fornece uma descrição detalhada da API Recepção, utilizada para gerenciar usuários, visitantes e visitas. A documentação foi gerada com base em uma especificação OpenAPI, utilizando Fastify e Zod.
+Este documento fornece uma descrição detalhada da API Recepção, utilizada para gerenciar usuários, visitantes e visitas. A documentação foi gerada com base em uma especificação OpenAPI, utilizando Fastify.
 
 ## URL Base
 
@@ -240,7 +240,7 @@ Cria um novo usuário no sistema.
 | `role` | string | Sim | Nível de permissão (ex: "Admin", "User"). |
 | `email` | string | Sim | E-mail do usuário (deve ser único). |
 | `cpf` | string | Sim | CPF do usuário (deve ser único). |
-| `password` | string | Não | Senha inicial. Se não for fornecida, uma padrão pode ser gerada. |
+| `password` | string | Não | Senha inicial. Se não for fornecida, uma padrão pode ser gerada, só leva em conta a criação de uma senha sem ser padrão caso em ambiente de desenvolvimento para configurar a aplicação. |
 
 **Respostas:**
 

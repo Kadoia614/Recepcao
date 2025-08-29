@@ -54,6 +54,7 @@ export const createVisitorController = async (
       state: data.state,
       zipCode: data.zipCode,
     };
+
     const result = await VisitorsService.createVisitor(visitorData);
 
     if (!result.ok) {
