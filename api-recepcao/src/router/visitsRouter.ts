@@ -105,7 +105,7 @@ const visitById = {
 
 export async function visitsRouter(app: FastifyInstance) {
   app.addHook("preHandler", authJWT);
-  app.addHook("preHandler", checkPermissions);
+  app.addHook("preHandler", checkPermissions("visits"));
 
   app.route({
     method: "GET",

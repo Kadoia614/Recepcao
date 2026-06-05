@@ -22,29 +22,10 @@ cd ./web-admin
 
    npm i
 
-3. Alter the proxi to target your API
+3. Configure the dev proxy target with an environment variable:
 
 ```
-Source: /web-admin/vite.config.js ->
-const __filename = fileURLToPath(import.meta.url)
-const __dirname = path.dirname(__filename)
-
-// https://vite.dev/config/
-export default defineConfig({
-  [...]
-  server: {
-    host: "0.0.0.0", //Acesso externo
-    port: 5173,
-    proxy: {
-      "/api/v1": {
-        target: "Your API here",
-        changeOrigin: false,
-        secure: false,
-      }
-    }
-  }
-  [...]
-})
+VITE_API_PROXY_TARGET=http://localhost:3000
 ```
 
 4. Execute the project:
@@ -101,6 +82,76 @@ export default defineConfig({
 
 **Versão: 1.0.0**
 
+## Production configuration
+
+The API requires these environment variables:
+
+```
+NODE_ENV=production
+APPLICATION_PORT=3000
+APPLICATION_CORS_ORIGIN=http://localhost:81
+APPLICATION_SWAGGER_URL=http://localhost:3000
+SECRET_KEY_JWT=change-me
+SECRET_EMAIL=your-email
+SECRET_PASSWORD=your-email-password
+DATABASE_USER=recepcao
+DATABASE_KEY=recepcao-password
+DATABASE_NAME=recepcao
+DATABASE_HOST=db
+DATABASE_URL=mariadb://recepcao:recepcao-password@db:3306/recepcao
+SEED_ADMIN_FIRST_NAME=Admin
+SEED_ADMIN_LAST_NAME=Sistema
+SEED_ADMIN_USERNAME=admin.sistema
+SEED_ADMIN_EMAIL=admin@example.com
+SEED_ADMIN_CPF=529.982.247-25
+SEED_ADMIN_PASSWORD=change-me-admin
+```
+
+For local development, the frontend proxy uses `VITE_API_PROXY_TARGET` and falls
+back to `http://localhost:3000`.
+
+To run the API after build:
+
+```
+cd ./api-recepcao
+npm run migrate
+npm run build
+npm start
+```
+
+Migration commands:
+
+```
+npm run migrate        # apply pending migrations
+npm run migrate:undo   # roll back the latest migration
+npm run migrate:undo:all
+npm run migrate:prod   # apply migrations from dist after build
+```
+
+Seed commands:
+
+```
+npm run seed       # create the first superadmin if it does not exist
+npm run seed:prod  # run the seed from dist after build
+```
+
+The Docker API container runs migrations and the admin seed before starting the
+server. Change `SEED_ADMIN_PASSWORD` before using a real environment.
+
+To run the full stack with Docker Compose:
+
+```
+docker compose up --build
+```
+
+Security note: new user passwords are still sent by e-mail in this version.
+Plan a first-access/reset flow before exposing the system outside a trusted
+network.
+
+User, visitor and visit routes require a valid JWT in every environment. For a
+fresh database, create the first superadmin through a seed/migration or another
+controlled bootstrap process before starting regular use.
+
 Este documento fornece uma descrição detalhada da API Recepção, utilizada para gerenciar usuários, visitantes e visitas. A documentação foi gerada com base em uma especificação OpenAPI, utilizando Fastify.
 
 ## URL Base
@@ -108,7 +159,7 @@ Este documento fornece uma descrição detalhada da API Recepção, utilizada pa
 Todas as URLs mencionadas nesta documentação são relativas à seguinte URL base:
 
 ```
-http://192.168.16.13:3333
+APPLICATION_SWAGGER_URL
 ```
 
 ## Autenticação

@@ -10,6 +10,12 @@ const __dirname = path.dirname(__filename);
 const LogDir = path.join(__dirname, "../../log");
 
 export class Log {
+  private static SafeRequest = (request: any) => ({
+    method: request.method,
+    url: request.url,
+    ip: request.ip,
+  });
+
   static GerarErrorLog = (request: any, error: any): void => {
     // Obtém o código de status ou define como 500 por padrão
     const { code = 500, message, ok, api, validation, stack } = error;
@@ -28,13 +34,7 @@ export class Log {
         stack: stack,
         api: api,
       },
-      request: {
-        method: request.method,
-        url: request.url,
-        ip: request.ip,
-        headers: request.headers,
-        body: request.body,
-      },
+      request: Log.SafeRequest(request),
     };
 
     Log.CreateLog(ErrorlogFilePath, errorLog);
@@ -45,13 +45,7 @@ export class Log {
 
     const requestLog = {
       timestamp: new Date().toISOString(),
-      request: {
-        method: request.method,
-        url: request.url,
-        ip: request.ip,
-        headers: request.headers,
-        body: request.body,
-      },
+      request: Log.SafeRequest(request),
     };
 
     Log.CreateLog(RequestlogFilePath, requestLog);

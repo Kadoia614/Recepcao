@@ -60,7 +60,7 @@ const visitorResponse = {
 
 export async function visitorRouter(app: FastifyInstance) {
   app.addHook("preHandler", authJWT);
-  app.addHook("preHandler", checkPermissions);
+  app.addHook("preHandler", checkPermissions("visitors"));
 
   app.route({
     method: "GET",

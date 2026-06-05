@@ -6,6 +6,8 @@ import tailwindcss from "@tailwindcss/vite";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
+const apiProxyTarget =
+  process.env.VITE_API_PROXY_TARGET || "http://localhost:3000";
 
 // https://vite.dev/config/
 export default defineConfig({
@@ -24,7 +26,7 @@ export default defineConfig({
     port: 5173,
     proxy: {
       "/api/v1": {
-        target: "http://192.168.16.13:3000",
+        target: apiProxyTarget,
         changeOrigin: false,
         secure: false,
       },

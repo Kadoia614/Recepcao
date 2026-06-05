@@ -6,7 +6,11 @@ import { fastifySwagger } from "@fastify/swagger";
 import { fastifySwaggerUi } from "@fastify/swagger-ui";
 import { Router } from "./router/routes.js";
 
-import { PORT } from "./config/env.js";
+import {
+  APPLICATION_CORS_ORIGIN,
+  APPLICATION_SWAGGER_URL,
+  PORT,
+} from "./config/env.js";
 import { interfaceErrorResponse } from "./types/errorTypes.js";
 
 import "./db/model/association.js";
@@ -15,6 +19,7 @@ const app = fastify({
   logger: {
     level: "info",
     file: "./log.json", // Will use pino.destination()
+    redact: ["req.headers.authorization", "req.headers.cookie"],
     serializers: {
       res(res) {
         // The default
@@ -27,18 +32,13 @@ const app = fastify({
           method: req.method,
           url: req.url,
           parameters: req.params,
-          // Including the headers in the log could be in violation
-          // of privacy laws, e.g. GDPR. You should use the "redact" option to
-          // remove sensitive fields. It could also leak authentication data in
-          // the logs.
-          headers: req.headers,
         };
       },
     },
   },
 });
 
-app.register(fastifyCors, { origin: "*" });
+app.register(fastifyCors, { origin: APPLICATION_CORS_ORIGIN });
 
 app.register(fastifySwagger, {
   openapi: {
@@ -50,7 +50,7 @@ app.register(fastifySwagger, {
     },
     servers: [
       {
-        url: `http://192.168.16.13:3333`,
+        url: APPLICATION_SWAGGER_URL,
         description: "Development server",
       },
     ],
@@ -59,10 +59,6 @@ app.register(fastifySwagger, {
 
 app.register(fastifySwaggerUi, {
   routePrefix: "/documentation",
-});
-
-app.addHook("onRequest", (request, reply, done) => {
-  done();
 });
 
 app.setErrorHandler((error, request, reply) => {
@@ -79,8 +75,6 @@ app.setErrorHandler((error, request, reply) => {
   console.error("Request details:", {
     method: request.method,
     url: request.url,
-    headers: request.headers,
-    body: request.body,
   });
 
   console.error("Reply details:", {

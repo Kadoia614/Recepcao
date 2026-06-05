@@ -15,6 +15,10 @@ function must(name: string): string {
 export const APPLICATION_ENVORIMENT = must("NODE_ENV");
 
 export const PORT = must("APPLICATION_PORT");
+export const APPLICATION_CORS_ORIGIN =
+  process.env.APPLICATION_CORS_ORIGIN || "http://localhost:5173";
+export const APPLICATION_SWAGGER_URL =
+  process.env.APPLICATION_SWAGGER_URL || `http://localhost:${PORT}`;
 
 export const SECRET_KEY_JWT = must("SECRET_KEY_JWT");
 

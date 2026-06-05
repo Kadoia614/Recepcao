@@ -1,32 +1,29 @@
-// middlewares/checkPermissions.ts
-import { FastifyRequest, FastifyReply } from "fastify";
+import { FastifyReply, FastifyRequest } from "fastify";
 import { validatePermission } from "../utils/validatePermission.js";
 
-export async function checkPermissions(
-  request: FastifyRequest,
-  reply: FastifyReply
-) {
-  const method = request.method;
-  const routePath = request.url; // Ex: "/api/user/:uuid"
+type ProtectedModule = "user" | "visitors" | "visits";
 
-  const module = routePath.split("/")[3].split("?")[0] as
-    | "user"
-    | "visitors"
-    | "visits";
+export function checkPermissions(module: ProtectedModule) {
+  return async function permissionHandler(
+    request: FastifyRequest,
+    reply: FastifyReply
+  ) {
+    const method = request.method;
+    const role = request.user?.role as "user" | "admin" | "superadmin";
 
-  const role = request.user?.role as "user" | "admin" | "superadmin"; // JWT deve ter injetado isso antes
-  if (!role || !module) {
-    return reply.code(403).send({ ok: false, message: "Permissão negada" });
-  }
+    if (!role) {
+      return reply.code(403).send({ ok: false, message: "Permissao negada" });
+    }
 
-  const validation = validatePermission(
-    request.body as object,
-    role,
-    method,
-    module
-  );
+    const validation = validatePermission(
+      (request.body as object) || {},
+      role,
+      method,
+      module
+    );
 
-  if (!validation.ok) {
-    return reply.code(403).send({ ok: false, message: validation.message });
-  }
+    if (!validation.ok) {
+      return reply.code(403).send({ ok: false, message: validation.message });
+    }
+  };
 }
